@@ -1,4 +1,3 @@
-@tool
 class_name SmolMesh
 extends MeshInstance3D
 
@@ -21,7 +20,13 @@ func _process(_delta: float) -> void:
 func update_mesh(rad: float, subdiv: int) -> void:
 	mesh.clear_surfaces()
 	var surface_array: Array = generate_mesh_array(rad, subdiv)
-	#print(len(surface_array[Mesh.ARRAY_VERTEX]))
+	
+	#var surface_tool:SurfaceTool = SurfaceTool.new()
+	#surface_tool.create_from_arrays(surface_array, 0)
+	#surface_tool.generate_normals()
+	#surface_tool.generate_tangents()
+	#var surface_array_2: Array = surface_tool.commit_to_arrays()
+	
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 	
 	
@@ -71,6 +76,7 @@ static func generate_mesh_array(rad: float, subdiv: int) -> Array:
 	for i: int in len(surface_array[Mesh.ARRAY_VERTEX]):
 		var norm: Vector3 = surface_array[Mesh.ARRAY_VERTEX][i].normalized()
 		surface_array[Mesh.ARRAY_VERTEX][i] = norm * rad
+	# WHY DOESNT THIS WORK?
 		normals.append(norm)
 	surface_array[Mesh.ARRAY_NORMAL] = normals 
 	
