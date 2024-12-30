@@ -2,6 +2,7 @@
 class_name SmolMesh
 extends MeshInstance3D
 
+
 @export var enabled: bool = false
 @export var radius: float = 1.0
 @export var subdivisions: int = 1
@@ -29,6 +30,7 @@ static func generate_mesh_array(rad: float, subdiv: int) -> Array:
 	surface_array.resize(Mesh.ARRAY_MAX)
 	var vertices: PackedVector3Array = PackedVector3Array()
 	var indices: PackedInt32Array = PackedInt32Array()
+	var normals: PackedVector3Array = PackedVector3Array()
 
 	# Calculate vertex spacing
 	var distance: float = rad / subdiv
@@ -67,7 +69,10 @@ static func generate_mesh_array(rad: float, subdiv: int) -> Array:
 	boolean_mesh_arrays(surface_array, surface_2)
 	
 	for i: int in len(surface_array[Mesh.ARRAY_VERTEX]):
-		surface_array[Mesh.ARRAY_VERTEX][i] = surface_array[Mesh.ARRAY_VERTEX][i].normalized() * rad
+		var norm: Vector3 = surface_array[Mesh.ARRAY_VERTEX][i].normalized()
+		surface_array[Mesh.ARRAY_VERTEX][i] = norm * rad
+		normals.append(norm)
+	surface_array[Mesh.ARRAY_NORMAL] = normals 
 	
 	return surface_array
 	
