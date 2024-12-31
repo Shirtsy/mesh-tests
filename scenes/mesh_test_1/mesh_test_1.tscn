@@ -33,7 +33,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.8260
 script = ExtResource("1_ckogf")
 enabled = true
 radius = 0.5
-subdivisions = 10
+subdivisions = 20
 
 [node name="CameraPivot" type="Node3D" parent="."]
 script = ExtResource("2_hhcjo")
