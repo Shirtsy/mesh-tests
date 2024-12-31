@@ -1,33 +1,47 @@
 class_name SmolMesh
 extends MeshInstance3D
 
-
-@export var enabled: bool = false
+@export var threading: bool = true
 @export var radius: float = 1.0
 @export var subdivisions: int = 1
+
+@onready var thread: Thread = Thread.new()
+@onready var tracker: Label = $/root/MeshTest1/CanvasLayer/Tracker
+
+var surface_array: Array = []
+var counter: float = 0.0
 
 
 func _ready() -> void:
 	mesh = ArrayMesh.new()
-	update_mesh(radius, subdivisions)
-
-
-func _process(_delta: float) -> void:
-	if enabled:
-		update_mesh(radius, subdivisions)
-	
-	
-func update_mesh(rad: float, subdiv: int) -> void:
-	mesh.clear_surfaces()
-	var surface_array: Array = generate_mesh_array(rad, subdiv)
-	
-	#var surface_tool:SurfaceTool = SurfaceTool.new()
-	#surface_tool.create_from_arrays(surface_array, 0)
-	#surface_tool.generate_normals()
-	#surface_tool.generate_tangents()
-	#var surface_array_2: Array = surface_tool.commit_to_arrays()
-	
+	surface_array.resize(Mesh.ARRAY_MAX)
+	surface_array = generate_mesh_array(radius, subdivisions)
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
+
+
+func _process(delta: float) -> void:
+	if threading:
+		if not thread.is_started():
+			thread.start(generate_mesh_array.bind(radius, subdivisions))
+		elif not thread.is_alive():
+			surface_array = thread.wait_to_finish()
+			mesh.clear_surfaces()
+			mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
+			counter = 0
+	else:
+		mesh.clear_surfaces()
+		surface_array = generate_mesh_array(radius, subdivisions)
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
+		counter = 0
+	counter += delta
+	update_ui()
+	
+	
+func update_ui() -> void:
+	threading = $/root/MeshTest1/CanvasLayer/ThreadButton.button_pressed
+	tracker.text = "FPS: " + str(Engine.get_frames_per_second()) \
+			+ "\n" + "UPS: " + str(snapped(1 / counter, 1)) \
+			+ "\n" + "Verts: " + str(len(surface_array[Mesh.ARRAY_VERTEX]))
 	
 	
 static func generate_mesh_array(rad: float, subdiv: int) -> Array:
@@ -79,7 +93,7 @@ static func generate_mesh_array(rad: float, subdiv: int) -> Array:
 		var norm: Vector3 = surface_array[Mesh.ARRAY_VERTEX][i].normalized()
 		surface_array[Mesh.ARRAY_VERTEX][i] = norm * rad
 		normals.append(norm)
-	surface_array[Mesh.ARRAY_NORMAL] = normals 
+	surface_array[Mesh.ARRAY_NORMAL] = normals
 	
 	return surface_array
 	

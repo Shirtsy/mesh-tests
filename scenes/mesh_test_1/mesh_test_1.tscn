@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cv7aj5m0glpj3"]
+[gd_scene load_steps=6 format=3 uid="uid://cv7aj5m0glpj3"]
 
 [ext_resource type="Script" path="res://scenes/mesh_test_1/smol_mesh.gd" id="1_ckogf"]
 [ext_resource type="Script" path="res://scenes/mesh_test_1/camera_pivot.gd" id="2_hhcjo"]
-[ext_resource type="Script" path="res://scenes/mesh_test_1/fps_counter.gd" id="3_fbhyi"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n37tv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -31,9 +30,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.8260
 
 [node name="SmolMesh" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ckogf")
-enabled = true
 radius = 0.5
-subdivisions = 20
+subdivisions = 100
 
 [node name="CameraPivot" type="Node3D" parent="."]
 script = ExtResource("2_hhcjo")
@@ -42,9 +40,31 @@ script = ExtResource("2_hhcjo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 
-[node name="FPSCounter" type="Label" parent="CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="Tracker" type="Label" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+offset_right = 67.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
 text = "TEST"
-script = ExtResource("3_fbhyi")
+
+[node name="ThreadButton" type="CheckButton" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -145.0
+offset_top = -94.0
+offset_right = 1.0
+offset_bottom = -58.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(2, 2)
+theme_override_font_sizes/font_size = 20
+text = "Threading"
+metadata/_edit_use_anchors_ = true
