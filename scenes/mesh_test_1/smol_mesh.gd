@@ -63,20 +63,21 @@ static func generate_mesh_array(rad: float, subdiv: int) -> Array:
 	surface_array[Mesh.ARRAY_VERTEX] = vertices
 	surface_array[Mesh.ARRAY_INDEX] = indices
 	
+	# Fix this to be correct
 	var surface_2: Array = surface_array.duplicate(true)
 	rotate_mesh_array(surface_2, Vector3.LEFT, 90.0)
-	boolean_mesh_arrays(surface_array, surface_2)
-	rotate_mesh_array(surface_2, Vector3.FORWARD, 90.0)
+	#boolean_mesh_arrays(surface_array, surface_2)
+	rotate_mesh_array(surface_2, Vector3.LEFT, 90.0)
 	boolean_mesh_arrays(surface_array, surface_2)
 	surface_2 = surface_array.duplicate(true)
-	rotate_mesh_array(surface_2, Vector3.FORWARD, 180.0)
-	rotate_mesh_array(surface_2, Vector3.UP, -90.0)
+	rotate_mesh_array(surface_2, Vector3.UP, 90.0)
+	boolean_mesh_arrays(surface_array, surface_2)
+	rotate_mesh_array(surface_2, Vector3.FORWARD, 90.0)
 	boolean_mesh_arrays(surface_array, surface_2)
 	
 	for i: int in len(surface_array[Mesh.ARRAY_VERTEX]):
 		var norm: Vector3 = surface_array[Mesh.ARRAY_VERTEX][i].normalized()
 		surface_array[Mesh.ARRAY_VERTEX][i] = norm * rad
-	# WHY DOESNT THIS WORK?
 		normals.append(norm)
 	surface_array[Mesh.ARRAY_NORMAL] = normals 
 	
@@ -92,7 +93,7 @@ static func rotate_mesh_array(surf: Array, axis: Vector3, degrees: float) -> voi
 	
 static func boolean_mesh_arrays(surf_1: Array, surf_2: Array) -> void:
 	var indices: PackedInt32Array = PackedInt32Array()
-	for index: int in surf_1[Mesh.ARRAY_INDEX]:
+	for index: int in surf_2[Mesh.ARRAY_INDEX]:
 		indices.append(index + len(surf_1[Mesh.ARRAY_VERTEX]))
 	surf_1[Mesh.ARRAY_VERTEX].append_array(surf_2[Mesh.ARRAY_VERTEX])
 	surf_1[Mesh.ARRAY_INDEX].append_array(indices)
