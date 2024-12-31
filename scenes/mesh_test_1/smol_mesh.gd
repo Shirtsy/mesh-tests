@@ -25,14 +25,12 @@ func _process(delta: float) -> void:
 			thread.start(generate_mesh_array.bind(radius, subdivisions))
 		elif not thread.is_alive():
 			surface_array = thread.wait_to_finish()
-			mesh.clear_surfaces()
-			mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 			counter = 0
 	else:
-		mesh.clear_surfaces()
 		surface_array = generate_mesh_array(radius, subdivisions)
-		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 		counter = 0
+	mesh.clear_surfaces()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 	counter += delta
 	update_ui()
 	
