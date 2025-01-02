@@ -4,12 +4,13 @@ extends MeshInstance3D
 
 @export var radius: float = 1.0
 @export var marker: Node3D
+@export var noise: Noise
 
 @export var lod_distances: Array[float]
 
 
 func _ready() -> void:
-	print(lod_distances)
+	pass
 	
 	
 func _process(_delta: float) -> void:
