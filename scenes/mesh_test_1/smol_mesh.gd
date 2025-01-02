@@ -43,8 +43,8 @@ func update_ui() -> void:
 	
 	
 static func generate_mesh_array(rad: float, subdiv: int) -> Array:
-	var surface_array: Array = []
-	surface_array.resize(Mesh.ARRAY_MAX)
+	var surf_array: Array = []
+	surf_array.resize(Mesh.ARRAY_MAX)
 	var vertices: PackedVector3Array = PackedVector3Array()
 	var indices: PackedInt32Array = PackedInt32Array()
 	var normals: PackedVector3Array = PackedVector3Array()
@@ -72,28 +72,28 @@ static func generate_mesh_array(rad: float, subdiv: int) -> Array:
 			indices.append(vertex_index + subdiv + 2)
 			indices.append(vertex_index + 1)
 			
-	surface_array[Mesh.ARRAY_VERTEX] = vertices
-	surface_array[Mesh.ARRAY_INDEX] = indices
+	surf_array[Mesh.ARRAY_VERTEX] = vertices
+	surf_array[Mesh.ARRAY_INDEX] = indices
 	
 	# Fix this to be correct
-	var surface_2: Array = surface_array.duplicate(true)
+	var surface_2: Array = surf_array.duplicate(true)
 	rotate_mesh_array(surface_2, Vector3.LEFT, 90.0)
-	#boolean_mesh_arrays(surface_array, surface_2)
+	#boolean_mesh_arrays(surf_array, surface_2)
 	rotate_mesh_array(surface_2, Vector3.LEFT, 90.0)
-	boolean_mesh_arrays(surface_array, surface_2)
-	surface_2 = surface_array.duplicate(true)
+	boolean_mesh_arrays(surf_array, surface_2)
+	surface_2 = surf_array.duplicate(true)
 	rotate_mesh_array(surface_2, Vector3.UP, 90.0)
-	boolean_mesh_arrays(surface_array, surface_2)
+	boolean_mesh_arrays(surf_array, surface_2)
 	rotate_mesh_array(surface_2, Vector3.FORWARD, 90.0)
-	boolean_mesh_arrays(surface_array, surface_2)
+	boolean_mesh_arrays(surf_array, surface_2)
 	
-	for i: int in len(surface_array[Mesh.ARRAY_VERTEX]):
-		var norm: Vector3 = surface_array[Mesh.ARRAY_VERTEX][i].normalized()
-		surface_array[Mesh.ARRAY_VERTEX][i] = norm * rad
+	for i: int in len(surf_array[Mesh.ARRAY_VERTEX]):
+		var norm: Vector3 = surf_array[Mesh.ARRAY_VERTEX][i].normalized()
+		surf_array[Mesh.ARRAY_VERTEX][i] = norm * rad
 		normals.append(norm)
-	surface_array[Mesh.ARRAY_NORMAL] = normals
+	surf_array[Mesh.ARRAY_NORMAL] = normals
 	
-	return surface_array
+	return surf_array
 	
 	
 static func rotate_mesh_array(surf: Array, axis: Vector3, degrees: float) -> void:
