@@ -32,14 +32,12 @@ script = ExtResource("2_hhcjo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
 [node name="SmolMesh" type="MeshInstance3D" parent="."]
-process_mode = 4
 script = ExtResource("1_ckogf")
 radius = 0.5
 subdivisions = 100
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
-process_mode = 4
 
 [node name="Tracker" type="Label" parent="CanvasLayer"]
 anchors_preset = 2

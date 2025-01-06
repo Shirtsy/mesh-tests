@@ -32,6 +32,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.8260
 
 [node name="QuadPlanet" type="MeshInstance3D" parent="." node_paths=PackedStringArray("marker")]
 script = ExtResource("1_r87kv")
+radius = 0.5
 marker = NodePath("../Marker")
 noise = SubResource("FastNoiseLite_oj12t")
 lod_distances = Array[float]([100.0, 50.0, 25.0, 10.0])
