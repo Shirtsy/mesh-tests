@@ -72,4 +72,10 @@ static func generate_quadplanet_array(rad:float, marker_pos: Vector3, lod_dist: 
 	print(surface_array[Mesh.ARRAY_VERTEX])
 	print(surface_array[Mesh.ARRAY_INDEX])
 	return surface_array
+	
+	
+## Appends value to array and returns index of new value
+static func i_append(x: Variant, arr: Array) -> int:
+	arr.append(x)
+	return len(arr)
 #endregion
