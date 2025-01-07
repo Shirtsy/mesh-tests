@@ -29,16 +29,42 @@ static func generate_quadplanet_array(rad:float, marker_pos: Vector3, lod_dist: 
 	var normals: PackedVector3Array = PackedVector3Array()
 	var indices: PackedInt32Array = PackedInt32Array()
 	
-	var marker_dist: float = Vector3.ZERO.distance_to(marker_pos)
+	var quad_indices: Array[Array] = []
 	
 	# Generate first plane verts
 	vertices.append(Vector3(rad, rad, rad))
-	vertices.append(Vector3(-rad, rad, rad))
 	vertices.append(Vector3(rad, -rad, rad))
 	vertices.append(Vector3(-rad, -rad, rad))
+	vertices.append(Vector3(-rad, rad, rad))
+	var quad: Array[int] = [0, 1, 2, 3]
 	
-	indices.append_array([2, 1, 0])
-	indices.append_array([1, 2, 3])
+	if quad.any(
+		func(x: int) -> bool:
+			return true if marker_pos.distance_to(vertices[x]) < lod_dist[0] else false
+	):
+		var new_quads: Array[Array] = []
+		var new_verts: PackedVector3Array = PackedVector3Array()
+		for i: int in quad:
+			new_verts.append(vertices[i].lerp(vertices[(i % 3) + 1], 0.50))
+		new_verts.append(quad.reduce(
+			func(accum: Vector3, x: int) -> Vector3:
+				return accum + vertices[x]
+		, Vector3.ZERO) / 4)
+		vertices.append_array(new_verts)
+		new_quads.append([
+			quad[0],
+			len(vertices) - 5,
+			len(vertices) - 1,
+			len(vertices) - 2
+		])
+		quad_indices.append_array(new_quads)
+	else:
+		quad_indices.append(quad)
+	
+	for i_quad: Array[int] in quad_indices:
+		indices.append_array(i_quad.slice(0, 3))
+		indices.append_array(i_quad.slice(2, 4))
+		indices.append(i_quad[0])
 	
 	surface_array[Mesh.ARRAY_VERTEX] = vertices
 	#surface_array[Mesh.ARRAY_NORMAL] = normals

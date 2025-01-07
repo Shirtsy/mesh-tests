@@ -28,14 +28,14 @@ shadow_enabled = true
 environment = SubResource("Environment_hb1aa")
 
 [node name="Marker" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.826081)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.854631)
 
 [node name="QuadPlanet" type="MeshInstance3D" parent="." node_paths=PackedStringArray("marker")]
 script = ExtResource("1_r87kv")
 radius = 0.5
 marker = NodePath("../Marker")
 noise = SubResource("FastNoiseLite_oj12t")
-lod_distances = Array[float]([100.0, 50.0, 25.0, 10.0])
+lod_distances = Array[float]([1.0, 50.0, 25.0, 10.0])
 
 [node name="CameraPivot" type="Node3D" parent="."]
 script = ExtResource("2_tnro2")
