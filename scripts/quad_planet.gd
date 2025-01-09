@@ -39,8 +39,8 @@ static func generate_quadplanet_array(rad:float, marker_pos: Vector3, lod_dist: 
 	var quad: Array[int] = [0, 1, 2, 3]
 	
 	if quad.any(
-		func(x: int) -> bool:
-			return true if marker_pos.distance_to(vertices[x]) < lod_dist[0] else false
+			func(x: int) -> bool:
+				return true if marker_pos.distance_to(vertices[x]) < lod_dist[0] else false
 	):
 		var new_quads: Array[Array] = []
 		var new_verts: PackedVector3Array = PackedVector3Array()
@@ -78,4 +78,11 @@ static func generate_quadplanet_array(rad:float, marker_pos: Vector3, lod_dist: 
 static func i_append(x: Variant, arr: Array) -> int:
 	arr.append(x)
 	return len(arr)
+	
+	
+static func any_within_distance(pos: Vector3, dist: float, points: Array[Vector3]) -> bool:
+	return points.any(
+			func(x: int) -> bool:
+				return true if pos.distance_squared_to(points[x]) < (dist ** 2) else false
+	)
 #endregion
