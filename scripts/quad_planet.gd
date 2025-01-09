@@ -82,7 +82,7 @@ static func i_append(x: Variant, arr: Array) -> int:
 	
 static func any_within_distance(pos: Vector3, dist: float, points: Array[Vector3]) -> bool:
 	return points.any(
-			func(x: int) -> bool:
-				return true if pos.distance_squared_to(points[x]) < (dist ** 2) else false
+			func(x: Vector3) -> bool:
+				return true if pos.distance_squared_to(x) < (dist ** 2) else false
 	)
 #endregion
