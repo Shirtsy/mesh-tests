@@ -74,12 +74,14 @@ static func generate_quadplanet_array(rad:float, marker_pos: Vector3, lod_dist: 
 	return surface_array
 	
 	
-## Appends value to array and returns index of new value
+## Appends value to array and returns index of new value.
 static func i_append(x: Variant, arr: Array) -> int:
 	arr.append(x)
 	return len(arr)
 	
 	
+## Returns [code]true[/code] if [param pos] is within [param dist] of any
+## element in [param points].
 static func any_within_distance(pos: Vector3, dist: float, points: Array[Vector3]) -> bool:
 	return points.any(
 			func(x: Vector3) -> bool:
