@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cv7aj5m0glpj3"]
+[gd_scene load_steps=8 format=3 uid="uid://cv7aj5m0glpj3"]
 
 [ext_resource type="Script" uid="uid://cs2w0y2bjr6on" path="res://scenes/mesh_test_1/smol_mesh.gd" id="1_ckogf"]
 [ext_resource type="Script" uid="uid://c6vx63nmus2s8" path="res://scenes/mesh_test_1/camera_pivot.gd" id="2_hhcjo"]
+[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://wire.gdshader" id="2_oswoe"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n37tv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -15,6 +16,12 @@ background_mode = 2
 sky = SubResource("Sky_ba244")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l8ih8"]
+render_priority = 0
+shader = ExtResource("2_oswoe")
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 3.0
 
 [node name="MeshTest1" type="Node3D"]
 
@@ -32,6 +39,7 @@ script = ExtResource("2_hhcjo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
 [node name="SmolMesh" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_l8ih8")
 script = ExtResource("1_ckogf")
 radius = 0.5
 subdivisions = 100

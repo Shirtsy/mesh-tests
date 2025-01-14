@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cudhn5x3jmahf"]
+[gd_scene load_steps=9 format=3 uid="uid://cudhn5x3jmahf"]
 
 [ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="1_r87kv"]
+[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://wire.gdshader" id="1_tnro2"]
 [ext_resource type="Script" uid="uid://c6vx63nmus2s8" path="res://scenes/mesh_test_1/camera_pivot.gd" id="2_tnro2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n37tv"]
@@ -15,6 +16,12 @@ background_mode = 2
 sky = SubResource("Sky_ba244")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_is6cx"]
+render_priority = 0
+shader = ExtResource("1_tnro2")
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 3.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oj12t"]
 
@@ -31,6 +38,7 @@ environment = SubResource("Environment_hb1aa")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.854631)
 
 [node name="QuadPlanet" type="MeshInstance3D" parent="." node_paths=PackedStringArray("marker")]
+material_override = SubResource("ShaderMaterial_is6cx")
 script = ExtResource("1_r87kv")
 radius = 0.5
 marker = NodePath("../Marker")
