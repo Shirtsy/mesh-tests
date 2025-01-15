@@ -1,3 +1,4 @@
+@tool
 class_name QuadPlanet
 extends MeshInstance3D
 
@@ -63,7 +64,7 @@ static func generate_verts(
 	for dir: Vector3 in DIRECTIONS:
 		process_quads.append(generate_cube_face(dir).map(
 				func(x: Vector3) -> Vector3:
-					return x.normalized()
+					return x.normalized() * rad
 		))
 		
 	# Go through all quads. Ones outside LOD ranges are added to draw.
@@ -86,18 +87,18 @@ static func generate_verts(
 				func(x: Array) -> Array:
 					var y: Array[Vector3]
 					y.assign(x)
-					return subdivide_quad(y),
+					return subdivide_quad(y, rad),
 				split_quadarrays[1]
 		))
 		#print(dist, " ", len(draw_quads), " ", len(process_quads))
 	draw_quads.append_array(process_quads)
 	
-	# Apply radius and noise to draw_quads
+	# Renormalize verts to apply noise to draw_quads
 	draw_quads.assign(draw_quads.map(
 		func(x: Array) -> Array[Vector3]:
 			var new_quad: Array[Vector3] = []
 			for vert: Vector3 in x:
-				new_quad.append(vert * (rad + noi.get_noise_3dv(vert) * noi_mult))
+				new_quad.append(vert.normalized() * (rad + noi.get_noise_3dv(vert) * noi_mult))
 			return new_quad
 	))
 	
@@ -110,7 +111,7 @@ static func generate_verts(
 	return verts
 
 
-static func subdivide_quad(face: Array[Vector3]) -> Array[Array]:
+static func subdivide_quad(face: Array[Vector3], rad: float) -> Array[Array]:
 	var new_verts: Array[Vector3] = [
 		(face[0] + face[1]) / 2,
 		(face[1] + face[2]) / 2,
@@ -120,7 +121,7 @@ static func subdivide_quad(face: Array[Vector3]) -> Array[Array]:
 	]
 	new_verts.assign(new_verts.map(
 				func(x: Vector3) -> Vector3:
-					return x.normalized()
+					return x.normalized() * rad
 	))
 	return [
 		[face[0], new_verts[0], new_verts[4], new_verts[3]],
