@@ -8,6 +8,14 @@ extends MeshInstance3D
 
 @export var lod_distances: Array[float]
 
+const DIRECTIONS: Array[Vector3] = [
+	Vector3.UP,
+	Vector3.DOWN,
+	Vector3.LEFT,
+	Vector3.RIGHT,
+	Vector3.FORWARD,
+	Vector3.BACK
+]
 
 func _ready() -> void:
 	mesh = generate_mesh(radius, marker.position, lod_distances, noise)
@@ -15,15 +23,20 @@ func _ready() -> void:
 	
 	
 func _process(_delta: float) -> void:
-	#mesh = generate_mesh(radius, marker.position, lod_distances, noise)
+	mesh = generate_mesh(radius, marker.position, lod_distances, noise)
 	pass
 
 
 #region Static functions
-static func generate_mesh(rad: float, marker_pos: Vector3, lod_dist: Array[float], noise: Noise) -> Mesh:
+static func generate_mesh(
+		rad: float,
+		marker_pos: Vector3,
+		lod_dist: Array[float],
+		noi: Noise
+) -> Mesh:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for vert: Vector3 in generate_verts(rad, marker_pos, lod_dist, noise):
+	for vert: Vector3 in generate_verts(rad, marker_pos, lod_dist, noi):
 		st.set_smooth_group(-1)
 		st.add_vertex(vert)
 	st.index()
@@ -31,30 +44,47 @@ static func generate_mesh(rad: float, marker_pos: Vector3, lod_dist: Array[float
 	return st.commit()
 
 
-static func generate_verts(rad: float, marker_pos: Vector3, lod_dist: Array[float], noise: Noise) -> PackedVector3Array:
+static func generate_verts(
+		rad: float,
+		marker_pos: Vector3,
+		lod_dist: Array[float],
+		noi: Noise
+) -> PackedVector3Array:
 	var verts: PackedVector3Array = PackedVector3Array()
-	var quads: Array[Array] = []
+	var process_quads: Array[Array] = []
+	var draw_quads: Array[Array] = []
 	
-	var directions: Array[Vector3] = [
-		Vector3.UP,
-		Vector3.DOWN,
-		Vector3.LEFT,
-		Vector3.RIGHT,
-		Vector3.FORWARD,
-		Vector3.BACK
-	]
-	for dir: Vector3 in directions:
-		var plane: Array[Vector3]
-		# Turn this into an array of quads instead of a quad and then have a 
-		# new quads array that leaf nodes can be recursively added to while passing
-		# all the branch nodes to next loop
-		plane.assign(generate_cube_face(dir).map(
-					func(x: Vector3) -> Vector3: return x.normalized() * rad
-			))
-		quads.append_array(subdivide_face(marker_pos, lod_dist[0], plane))
-	
+	# Generate cube faces
+	for dir: Vector3 in DIRECTIONS:
+		process_quads.append(generate_cube_face(dir).map(
+				func(x: Vector3) -> Vector3:
+					return x.normalized() * (rad + noi.get_noise_3dv(x))
+		))
+		
+	for dist: float in lod_dist:
+		if len(process_quads) == 0:
+			#print("Done!")
+			break
+		var split_quadarrays: Array[Array] = split_array(
+				func(x: Array) -> bool:
+					var y: Array[Vector3]
+					y.assign(x)
+					return any_within_distance(y, marker_pos, dist),
+				process_quads
+		)
+		draw_quads.append_array(split_quadarrays[0])
+		process_quads.assign(flatmap(
+				func(x: Array) -> Array:
+					var y: Array[Vector3]
+					y.assign(x)
+					return subdivide_quad(y, rad, noi),
+				split_quadarrays[1]
+		))
+		#print(dist, " ", len(draw_quads), " ", len(process_quads))
+	draw_quads.append_array(process_quads)
+		
 	# Append quads as two triangles
-	for quad: Array[Vector3] in quads:
+	for quad: Array[Vector3] in draw_quads:
 		verts.append_array(PackedVector3Array([
 			quad[0], quad[1], quad[2],
 			quad[2], quad[3], quad[0]
@@ -62,23 +92,28 @@ static func generate_verts(rad: float, marker_pos: Vector3, lod_dist: Array[floa
 	return verts
 
 
-static func subdivide_face(marker_pos: Vector3, dist: float, face: Array[Vector3]) -> Array[Array]:
-	if any_within_distance(marker_pos, dist, face):
-		var new_verts: Array[Vector3] = [
-			(face[0] + face[1]) / 2,
-			(face[1] + face[2]) / 2,
-			(face[2] + face[3]) / 2,
-			(face[3] + face[0]) / 2,
-			face.reduce(func(accum: Vector3, x: Vector3) -> Vector3: return accum + x, Vector3.ZERO) / 4
-		]
-		return [
-			[face[0], new_verts[0], new_verts[4], new_verts[3]],
-			[face[1], new_verts[1], new_verts[4], new_verts[0]],
-			[face[2], new_verts[2], new_verts[4], new_verts[1]],
-			[face[3], new_verts[3], new_verts[4], new_verts[2]]
-		]
-	else:
-		return [face]
+static func subdivide_quad(face: Array[Vector3], rad: float, noi: Noise) -> Array[Array]:
+	var new_verts: Array[Vector3] = [
+		(face[0] + face[1]) / 2,
+		(face[1] + face[2]) / 2,
+		(face[2] + face[3]) / 2,
+		(face[3] + face[0]) / 2
+	]
+	new_verts.assign(new_verts.map(
+				func(x: Vector3) -> Vector3:
+					return (x.normalized() * rad)
+	))
+	new_verts.append(face.reduce(
+			func(accum: Vector3, x: Vector3) -> Vector3:
+				return accum + x, Vector3.ZERO
+	) / 4)
+	new_verts[4] = new_verts[4].normalized() * (rad + noi.get_noise_3dv(new_verts[4]))
+	return [
+		[face[0], new_verts[0], new_verts[4], new_verts[3]],
+		[face[1], new_verts[1], new_verts[4], new_verts[0]],
+		[face[2], new_verts[2], new_verts[4], new_verts[1]],
+		[face[3], new_verts[3], new_verts[4], new_verts[2]]
+	]
 
 
 static func generate_cube_face(normal: Vector3) -> Array[Vector3]:
@@ -100,19 +135,43 @@ static func generate_cube_face(normal: Vector3) -> Array[Vector3]:
 	# The face will be centered at normal * 0.5 (half a unit from center)
 	var center: Vector3 = normal * 0.5
 	# Create the four corners by adding and subtracting right and up vectors
-	var corners: Array[Vector3] = []
-	corners.append(center + right * 0.5 + up * 0.5)  # Top-right
-	corners.append(center + right * 0.5 - up * 0.5)  # Bottom-right
-	corners.append(center - right * 0.5 - up * 0.5)  # Bottom-left
-	corners.append(center - right * 0.5 + up * 0.5)  # Top-left
+	var corners: Array[Vector3] = [
+		center + right * 0.5 + up * 0.5,  # Top-right
+		center + right * 0.5 - up * 0.5,  # Bottom-right
+		center - right * 0.5 - up * 0.5,  # Bottom-left
+		center - right * 0.5 + up * 0.5  # Top-left
+	]
 	return corners
 
 
 ## Returns [code]true[/code] if [param pos] is within [param dist] of any
 ## element in [param points].
-static func any_within_distance(pos: Vector3, dist: float, points: Array[Vector3]) -> bool:
+static func any_within_distance(points: Array[Vector3], pos: Vector3, dist: float) -> bool:
 	return points.any(
 			func(x: Vector3) -> bool:
 				return true if pos.distance_squared_to(x) < (dist ** 2) else false
 	)
+	
+
+## Processes [param arr] with [param function]. Returns [Array]. Index [code]0[/code] is false values.
+## Index [code]1[/code] is true values.
+static func split_array(function: Callable, arr: Array) -> Array[Array]:
+	var falsey: Array = []
+	var truthy: Array = []
+	for item: Variant in arr:
+		if function.call(item):
+			truthy.append(item)
+		else:
+			falsey.append(item)
+	return [falsey, truthy]
+	
+
+## Accepts [Callable] [param function] that returns [Array] and applies it to [param arr].
+## Returns flat [Array] of all returned values.
+static func flatmap(function: Callable, arr: Array) -> Array:
+	var new_arr: Array = []
+	for a: Array in arr.map(function):
+		for item: Variant in a:
+			new_arr.append(item)
+	return new_arr
 #endregion

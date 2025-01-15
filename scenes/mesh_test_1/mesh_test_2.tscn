@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cudhn5x3jmahf"]
+[gd_scene load_steps=11 format=3 uid="uid://cudhn5x3jmahf"]
 
 [ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="1_r87kv"]
 [ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://wire.gdshader" id="1_tnro2"]
@@ -17,6 +17,9 @@ sky = SubResource("Sky_ba244")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="BoxMesh" id="BoxMesh_r87kv"]
+size = Vector3(0.1, 0.1, 0.1)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r87kv"]
 render_priority = 0
 shader = ExtResource("1_tnro2")
@@ -24,6 +27,15 @@ shader_parameter/albedo = Color(0, 0, 0, 1)
 shader_parameter/outline_width = 3.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_oj12t"]
+noise_type = 5
+frequency = 0.001
+fractal_type = 0
+fractal_gain = 0.0
+domain_warp_amplitude = 5.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_r87kv"]
+radius = 0.999
+height = 1.998
 
 [node name="MeshTest1" type="Node3D"]
 
@@ -35,7 +47,11 @@ shadow_enabled = true
 environment = SubResource("Environment_hb1aa")
 
 [node name="Marker" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 0.854631)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0673636, -0.0517887, 1.47255)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Marker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.764701)
+mesh = SubResource("BoxMesh_r87kv")
 
 [node name="CameraPivot" type="Node3D" parent="."]
 script = ExtResource("2_tnro2")
@@ -53,4 +69,7 @@ skeleton = NodePath("../..")
 script = ExtResource("1_r87kv")
 marker = NodePath("../../Marker")
 noise = SubResource("FastNoiseLite_oj12t")
-lod_distances = Array[float]([5.0, 50.0, 25.0, 10.0])
+lod_distances = Array[float]([5.0, 4.0, 3.0, 2.0, 1.0, 0.5])
+
+[node name="DisplaySphere" type="MeshInstance3D" parent="CameraPivot2"]
+mesh = SubResource("SphereMesh_r87kv")
