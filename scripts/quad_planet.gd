@@ -4,9 +4,12 @@ extends MeshInstance3D
 
 @export var radius: float = 1.0
 @export var marker: Node3D
+@export var lod_distances: Array[float]
+@export var noise_mult: float = 1.0
 @export var noise: Noise
 
-@export var lod_distances: Array[float]
+
+
 
 const DIRECTIONS: Array[Vector3] = [
 	Vector3.UP,
@@ -18,12 +21,12 @@ const DIRECTIONS: Array[Vector3] = [
 ]
 
 func _ready() -> void:
-	mesh = generate_mesh(radius, marker.position, lod_distances, noise)
+	mesh = generate_mesh(radius, marker.position, lod_distances, noise, noise_mult)
 	print("Mesh Vert Count: ", mesh.surface_get_array_len(Mesh.ARRAY_VERTEX))
 	
 	
 func _process(_delta: float) -> void:
-	mesh = generate_mesh(radius, marker.position, lod_distances, noise)
+	#mesh = generate_mesh(radius, marker.position, lod_distances, noise)
 	pass
 
 
@@ -32,11 +35,12 @@ static func generate_mesh(
 		rad: float,
 		marker_pos: Vector3,
 		lod_dist: Array[float],
-		noi: Noise
+		noi: Noise,
+		noi_mult: float
 ) -> Mesh:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for vert: Vector3 in generate_verts(rad, marker_pos, lod_dist, noi):
+	for vert: Vector3 in generate_verts(rad, marker_pos, lod_dist, noi, noi_mult):
 		st.set_smooth_group(-1)
 		st.add_vertex(vert)
 	st.index()
@@ -48,19 +52,24 @@ static func generate_verts(
 		rad: float,
 		marker_pos: Vector3,
 		lod_dist: Array[float],
-		noi: Noise
+		noi: Noise,
+		noi_mult: float
 ) -> PackedVector3Array:
 	var verts: PackedVector3Array = PackedVector3Array()
 	var process_quads: Array[Array] = []
 	var draw_quads: Array[Array] = []
 	
-	# Generate cube faces
+	# Generate cube faces.
 	for dir: Vector3 in DIRECTIONS:
 		process_quads.append(generate_cube_face(dir).map(
 				func(x: Vector3) -> Vector3:
-					return x.normalized() * (rad + noi.get_noise_3dv(x))
+					return x.normalized()
 		))
 		
+	# Go through all quads. Ones outside LOD ranges are added to draw.
+	# All within LOD ranges are added to processing list, are subdivided, then
+	# get added back to processing list for next layer. This way only 'leaf'
+	# quads get drawn.
 	for dist: float in lod_dist:
 		if len(process_quads) == 0:
 			#print("Done!")
@@ -77,13 +86,22 @@ static func generate_verts(
 				func(x: Array) -> Array:
 					var y: Array[Vector3]
 					y.assign(x)
-					return subdivide_quad(y, rad, noi),
+					return subdivide_quad(y),
 				split_quadarrays[1]
 		))
 		#print(dist, " ", len(draw_quads), " ", len(process_quads))
 	draw_quads.append_array(process_quads)
-		
-	# Append quads as two triangles
+	
+	# Apply radius and noise to draw_quads
+	draw_quads.assign(draw_quads.map(
+		func(x: Array) -> Array[Vector3]:
+			var new_quad: Array[Vector3] = []
+			for vert: Vector3 in x:
+				new_quad.append(vert * (rad + noi.get_noise_3dv(vert) * noi_mult))
+			return new_quad
+	))
+	
+	# Append quads as two triangles.
 	for quad: Array[Vector3] in draw_quads:
 		verts.append_array(PackedVector3Array([
 			quad[0], quad[1], quad[2],
@@ -92,22 +110,18 @@ static func generate_verts(
 	return verts
 
 
-static func subdivide_quad(face: Array[Vector3], rad: float, noi: Noise) -> Array[Array]:
+static func subdivide_quad(face: Array[Vector3]) -> Array[Array]:
 	var new_verts: Array[Vector3] = [
 		(face[0] + face[1]) / 2,
 		(face[1] + face[2]) / 2,
 		(face[2] + face[3]) / 2,
-		(face[3] + face[0]) / 2
+		(face[3] + face[0]) / 2,
+		face.reduce(func(accum: Vector3, x: Vector3) -> Vector3: return accum + x, Vector3.ZERO) / 4
 	]
 	new_verts.assign(new_verts.map(
 				func(x: Vector3) -> Vector3:
-					return (x.normalized() * rad)
+					return x.normalized()
 	))
-	new_verts.append(face.reduce(
-			func(accum: Vector3, x: Vector3) -> Vector3:
-				return accum + x, Vector3.ZERO
-	) / 4)
-	new_verts[4] = new_verts[4].normalized() * (rad + noi.get_noise_3dv(new_verts[4]))
 	return [
 		[face[0], new_verts[0], new_verts[4], new_verts[3]],
 		[face[1], new_verts[1], new_verts[4], new_verts[0]],
