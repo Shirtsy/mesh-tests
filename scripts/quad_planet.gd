@@ -1,4 +1,3 @@
-@tool
 class_name QuadPlanet
 extends MeshInstance3D
 
@@ -10,6 +9,7 @@ extends MeshInstance3D
 @export var noise: Noise
 
 
+var thread: Thread = Thread.new()
 
 
 const DIRECTIONS: Array[Vector3] = [
@@ -27,7 +27,10 @@ func _ready() -> void:
 	
 	
 func _process(_delta: float) -> void:
-	#mesh = generate_mesh(radius, marker.position, lod_distances, noise)
+	if not thread.is_started():
+		thread.start(generate_mesh.bind(radius, marker.position, lod_distances, noise, noise_mult))
+	elif not thread.is_alive():
+		mesh = thread.wait_to_finish()
 	pass
 
 
@@ -93,7 +96,7 @@ static func generate_verts(
 		#print(dist, " ", len(draw_quads), " ", len(process_quads))
 	draw_quads.append_array(process_quads)
 	
-	# Renormalize verts to apply noise to draw_quads
+	# Renormalize verts to apply noise to draw_quads. Rotate them to match parent rotation.
 	draw_quads.assign(draw_quads.map(
 		func(x: Array) -> Array[Vector3]:
 			var new_quad: Array[Vector3] = []
