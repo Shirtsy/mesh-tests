@@ -1,0 +1,57 @@
+[gd_scene load_steps=11 format=3 uid="uid://bueu76vvaoudt"]
+
+[ext_resource type="PackedScene" uid="uid://cwj02077nkreh" path="res://scenes/player/player.tscn" id="1_taxgw"]
+[ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="2_ic8tw"]
+[ext_resource type="Script" uid="uid://c7155kaqouvos" path="res://scripts/multinoise.gd" id="3_85w3x"]
+[ext_resource type="Script" uid="uid://dq610yatv5rmn" path="res://scenes/mesh_test_1/wire_copy.gd" id="4_p45x0"]
+[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://scripts/wire.gdshader" id="4_uuqyi"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_taxgw"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_ic8tw"]
+sky_material = SubResource("ProceduralSkyMaterial_taxgw")
+
+[sub_resource type="Environment" id="Environment_85w3x"]
+background_mode = 2
+sky = SubResource("Sky_ic8tw")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="Resource" id="Resource_p45x0"]
+script = ExtResource("3_85w3x")
+noise_sources = Array[Noise]([])
+noise_magnitudes = Array[float]([])
+metadata/_custom_type_script = ExtResource("3_85w3x")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6i63x"]
+render_priority = 0
+shader = ExtResource("4_uuqyi")
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 3.0
+
+[node name="World1" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_85w3x")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_taxgw")]
+speed = 100.0
+
+[node name="QuadPlanet" type="MeshInstance3D" parent="." node_paths=PackedStringArray("marker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.06563)
+script = ExtResource("2_ic8tw")
+marker = NodePath("../Player")
+lod_distances = Array[float]([100.0, 50.0, 25.0, 5.0, 2.0, 0.5])
+multi_noise = SubResource("Resource_p45x0")
+metadata/_custom_type_script = ExtResource("2_ic8tw")
+
+[node name="Wire" type="MeshInstance3D" parent="QuadPlanet"]
+transform = Transform3D(1.001, 0, 0, 0, 1.001, 0, 0, 0, 1.001, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_6i63x")
+script = ExtResource("4_p45x0")

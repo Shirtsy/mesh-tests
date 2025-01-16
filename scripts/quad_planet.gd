@@ -6,7 +6,7 @@ extends MeshInstance3D
 @export var marker: Node3D
 @export var lod_distances: Array[float]
 @export var noise_mult: float = 1.0
-@export var noise: Noise
+@export var multi_noise: MultiNoise
 
 
 var thread: Thread = Thread.new()
@@ -21,14 +21,19 @@ const DIRECTIONS: Array[Vector3] = [
 	Vector3.BACK
 ]
 
+
 func _ready() -> void:
-	mesh = generate_mesh(radius, marker.position, lod_distances, noise, noise_mult)
-	print("Mesh Vert Count: ", mesh.surface_get_array_len(Mesh.ARRAY_VERTEX))
+	assert(marker, "Marker Node3D not set.")
+	assert(multi_noise, "MultiNoise not set.")
+	mesh = generate_mesh(radius, marker.position - position, lod_distances, multi_noise, noise_mult)
+	#print("Mesh Vert Count: ", mesh.surface_get_array_len(Mesh.ARRAY_VERTEX))
 	
 	
 func _process(_delta: float) -> void:
 	if not thread.is_started():
-		thread.start(generate_mesh.bind(radius, marker.position, lod_distances, noise, noise_mult))
+		thread.start(
+				generate_mesh.bind(radius, marker.position - position, lod_distances, multi_noise, noise_mult)
+		)
 	elif not thread.is_alive():
 		mesh = thread.wait_to_finish()
 	pass
@@ -39,7 +44,7 @@ static func generate_mesh(
 		rad: float,
 		marker_pos: Vector3,
 		lod_dist: Array[float],
-		noi: Noise,
+		noi: MultiNoise,
 		noi_mult: float
 ) -> Mesh:
 	var st: SurfaceTool = SurfaceTool.new()
@@ -56,7 +61,7 @@ static func generate_verts(
 		rad: float,
 		marker_pos: Vector3,
 		lod_dist: Array[float],
-		noi: Noise,
+		noi: MultiNoise,
 		noi_mult: float
 ) -> PackedVector3Array:
 	var verts: PackedVector3Array = PackedVector3Array()
@@ -101,7 +106,11 @@ static func generate_verts(
 		func(x: Array) -> Array[Vector3]:
 			var new_quad: Array[Vector3] = []
 			for vert: Vector3 in x:
-				var new_vert: Vector3 = vert.normalized() * (rad + noi.get_noise_3dv(vert) * noi_mult)
+				var new_vert: Vector3 = (
+						vert.normalized()
+						* (rad + noi.get_noise_3dv(vert)
+						* noi_mult)
+				)
 				new_quad.append(new_vert)
 			return new_quad
 	))
@@ -121,7 +130,10 @@ static func subdivide_quad(face: Array[Vector3], rad: float) -> Array[Array]:
 		(face[1] + face[2]) / 2,
 		(face[2] + face[3]) / 2,
 		(face[3] + face[0]) / 2,
-		face.reduce(func(accum: Vector3, x: Vector3) -> Vector3: return accum + x, Vector3.ZERO) / 4
+		face.reduce(
+				func(accum: Vector3, x: Vector3) -> Vector3:
+					return accum + x, Vector3.ZERO
+		) / 4
 	]
 	new_verts.assign(new_verts.map(
 				func(x: Vector3) -> Vector3:

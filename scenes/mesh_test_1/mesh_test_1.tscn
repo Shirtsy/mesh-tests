@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cs2w0y2bjr6on" path="res://scenes/mesh_test_1/smol_mesh.gd" id="1_ckogf"]
 [ext_resource type="Script" uid="uid://c6vx63nmus2s8" path="res://scenes/mesh_test_1/camera_pivot.gd" id="2_hhcjo"]
-[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://wire.gdshader" id="2_oswoe"]
+[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://scripts/wire.gdshader" id="2_oswoe"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n37tv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)

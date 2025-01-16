@@ -1,8 +1,10 @@
-[gd_scene load_steps=12 format=4 uid="uid://cudhn5x3jmahf"]
+[gd_scene load_steps=14 format=4 uid="uid://cudhn5x3jmahf"]
 
 [ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="1_r87kv"]
-[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://wire.gdshader" id="1_tnro2"]
+[ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://scripts/wire.gdshader" id="1_tnro2"]
 [ext_resource type="Script" uid="uid://c6vx63nmus2s8" path="res://scenes/mesh_test_1/camera_pivot.gd" id="2_tnro2"]
+[ext_resource type="Script" uid="uid://c7155kaqouvos" path="res://scripts/multinoise.gd" id="3_tnro2"]
+[ext_resource type="Script" uid="uid://dq610yatv5rmn" path="res://scenes/mesh_test_1/wire_copy.gd" id="4_tnro2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n37tv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -33,28 +35,19 @@ _surfaces = [{
 "vertex_data": PackedByteArray("kPBmwpDwZkKQ8GZCYfBmwmHwZkJh8GbCbfBmQm3wZkJt8GbCbfBmQm3wZkJt8GbCu/BmQrvwZkK78GZCkPBmwpDwZkKQ8GZCBfFmQgXxZsIF8WZCrPBmQqzwZsKs8GbCnfBmwp3wZsKd8GbCnfBmwp3wZsKd8GbCqfBmwqnwZsKp8GZCBfFmQgXxZsIF8WZCnfBmwp3wZsKd8GbCYfBmwmHwZkJh8GbCkPBmwpDwZkKQ8GZCkPBmwpDwZkKQ8GZCqfBmwqnwZsKp8GZCnfBmwp3wZsKd8GbCBfFmQgXxZsIF8WZCu/BmQrvwZkK78GZCbfBmQm3wZkJt8GbCbfBmQm3wZkJt8GbCrPBmQqzwZsKs8GbCBfFmQgXxZsIF8WZCrPBmQqzwZsKs8GbCbfBmQm3wZkJt8GbCYfBmwmHwZkJh8GbCYfBmwmHwZkJh8GbCnfBmwp3wZsKd8GbCrPBmQqzwZsKs8GbCqfBmwqnwZsKp8GZCkPBmwpDwZkKQ8GZCu/BmQrvwZkK78GZCu/BmQrvwZkK78GZCBfFmQgXxZsIF8WZCqfBmwqnwZsKp8GZC/3/+/wAA/7//f/7/AAD/v/9//v8AAP+//3/+/wAA/7//f/7/AAD/v/9//v8AAP+//38AAAAA/7//fwAAAAD/v/9/AAAAAP+//38AAAAA/7//fwAAAAD/v/9/AAAAAP+/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//v//f/9//7/+//9//3//v/7//3//f/+//v//f/9//7/+//9//3//v/7//3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA")
 }]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_r87kv"]
-frequency = 1.0
-fractal_octaves = 10
-fractal_gain = 3.31
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tnro2"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_r87kv"]
+[sub_resource type="Resource" id="Resource_is6cx"]
+script = ExtResource("3_tnro2")
+noise_sources = Array[Noise]([SubResource("FastNoiseLite_tnro2")])
+noise_magnitudes = Array[float]([1.0])
+metadata/_custom_type_script = ExtResource("3_tnro2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_is6cx"]
 render_priority = 0
 shader = ExtResource("1_tnro2")
 shader_parameter/albedo = Color(0, 0, 0, 1)
 shader_parameter/outline_width = 3.0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_tnro2"]
-_surfaces = [{
-"aabb": AABB(-57.735, -57.7354, -57.735, 115.47, 115.47, 115.47),
-"format": 34359742471,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("kPBmwpDwZkKQ8GZCYfBmwmHwZkJh8GbCbfBmQm3wZkJt8GbCbfBmQm3wZkJt8GbCu/BmQrvwZkK78GZCkPBmwpDwZkKQ8GZCBfFmQgXxZsIF8WZCrPBmQqzwZsKs8GbCnfBmwp3wZsKd8GbCnfBmwp3wZsKd8GbCqfBmwqnwZsKp8GZCBfFmQgXxZsIF8WZCnfBmwp3wZsKd8GbCYfBmwmHwZkJh8GbCkPBmwpDwZkKQ8GZCkPBmwpDwZkKQ8GZCqfBmwqnwZsKp8GZCnfBmwp3wZsKd8GbCBfFmQgXxZsIF8WZCu/BmQrvwZkK78GZCbfBmQm3wZkJt8GbCbfBmQm3wZkJt8GbCrPBmQqzwZsKs8GbCBfFmQgXxZsIF8WZCrPBmQqzwZsKs8GbCbfBmQm3wZkJt8GbCYfBmwmHwZkJh8GbCYfBmwmHwZkJh8GbCnfBmwp3wZsKd8GbCrPBmQqzwZsKs8GbCqfBmwqnwZsKp8GZCkPBmwpDwZkKQ8GZCu/BmQrvwZkK78GZCu/BmQrvwZkK78GZCBfFmQgXxZsIF8WZCqfBmwqnwZsKp8GZC/3/+/wAA/7//f/7/AAD/v/9//v8AAP+//3/+/wAA/7//f/7/AAD/v/9//v8AAP+//38AAAAA/7//fwAAAAD/v/9/AAAAAP+//38AAAAA/7//fwAAAAD/v/9/AAAAAP+/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+//v//f/9//7/+//9//3//v/7//3//f/+//v//f/9//7/+//9//3//v/7//3//f/+/AAD+//9/AIAAAP7//38AgAAA/v//fwCAAAD+//9/AIAAAP7//38AgAAA/v//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID/f/9//38AgP9//3//fwCA")
-}]
 
 [node name="MeshTest1" type="Node3D"]
 
@@ -78,6 +71,7 @@ script = ExtResource("2_tnro2")
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 124.661)
+current = true
 
 [node name="CameraPivot2" type="Node3D" parent="."]
 script = ExtResource("2_tnro2")
@@ -89,18 +83,10 @@ skeleton = NodePath("../..")
 script = ExtResource("1_r87kv")
 radius = 100.0
 marker = NodePath("../../Marker")
-lod_distances = Array[float]([200.0, 175.0, 150.0, 125.0, 100.0, 75.0, 50.0, 25.0, 15.0, 10.0, 5.0])
-noise_mult = 0.1
-noise = SubResource("FastNoiseLite_r87kv")
+lod_distances = Array[float]([125.0, 100.0, 75.0, 50.0, 25.0, 15.0, 10.0, 5.0])
+multi_noise = SubResource("Resource_is6cx")
 
-[node name="QuadPlanet2" type="MeshInstance3D" parent="CameraPivot2" node_paths=PackedStringArray("marker")]
-visible = false
-material_override = SubResource("ShaderMaterial_r87kv")
-mesh = SubResource("ArrayMesh_tnro2")
-skeleton = NodePath("../..")
-script = ExtResource("1_r87kv")
-radius = 100.0
-marker = NodePath("../../Marker")
-lod_distances = Array[float]([200.0, 175.0, 150.0, 125.0, 100.0, 75.0, 50.0, 25.0, 15.0, 10.0, 5.0])
-noise_mult = 0.1
-noise = SubResource("FastNoiseLite_r87kv")
+[node name="WireCopy" type="MeshInstance3D" parent="CameraPivot2/QuadPlanet"]
+transform = Transform3D(1.001, 0, 0, 0, 1.001, 0, 0, 0, 1.001, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_is6cx")
+script = ExtResource("4_tnro2")
