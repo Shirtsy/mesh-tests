@@ -96,12 +96,13 @@ static func generate_verts(
 		#print(dist, " ", len(draw_quads), " ", len(process_quads))
 	draw_quads.append_array(process_quads)
 	
-	# Renormalize verts to apply noise to draw_quads. Rotate them to match parent rotation.
+	# Renormalize verts to apply noise to draw_quads
 	draw_quads.assign(draw_quads.map(
 		func(x: Array) -> Array[Vector3]:
 			var new_quad: Array[Vector3] = []
 			for vert: Vector3 in x:
-				new_quad.append(vert.normalized() * (rad + noi.get_noise_3dv(vert) * noi_mult))
+				var new_vert: Vector3 = vert.normalized() * (rad + noi.get_noise_3dv(vert) * noi_mult)
+				new_quad.append(new_vert)
 			return new_quad
 	))
 	
@@ -128,9 +129,9 @@ static func subdivide_quad(face: Array[Vector3], rad: float) -> Array[Array]:
 	))
 	return [
 		[face[0], new_verts[0], new_verts[4], new_verts[3]],
-		[face[1], new_verts[1], new_verts[4], new_verts[0]],
+		[new_verts[0], face[1], new_verts[1], new_verts[4]],
 		[face[2], new_verts[2], new_verts[4], new_verts[1]],
-		[face[3], new_verts[3], new_verts[4], new_verts[2]]
+		[new_verts[2], face[3], new_verts[3], new_verts[4]]
 	]
 
 

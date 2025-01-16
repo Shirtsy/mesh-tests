@@ -89,18 +89,17 @@ skeleton = NodePath("../..")
 script = ExtResource("1_r87kv")
 radius = 100.0
 marker = NodePath("../../Marker")
-lod_distances = Array[float]([200.0, 175.0, 150.0, 125.0, 100.0, 75.0, 50.0, 25.0, 15.0, 10.0, 5.0])
-noise_mult = 0.1
+lod_distances = Array[float]([100.0, 100.0, 90.0, 75.0, 25.0, 5.0, 3.0, 2.0, 1.0])
+noise_mult = 0.001
 noise = SubResource("FastNoiseLite_r87kv")
 
 [node name="QuadPlanet2" type="MeshInstance3D" parent="CameraPivot2" node_paths=PackedStringArray("marker")]
-visible = false
 material_override = SubResource("ShaderMaterial_r87kv")
 mesh = SubResource("ArrayMesh_tnro2")
 skeleton = NodePath("../..")
 script = ExtResource("1_r87kv")
 radius = 100.0
 marker = NodePath("../../Marker")
-lod_distances = Array[float]([200.0, 175.0, 150.0, 125.0, 100.0, 75.0, 50.0, 25.0, 15.0, 10.0, 5.0])
-noise_mult = 0.1
+lod_distances = Array[float]([100.0, 100.0, 90.0, 75.0, 25.0, 5.0, 3.0, 2.0, 1.0])
+noise_mult = 0.001
 noise = SubResource("FastNoiseLite_r87kv")
