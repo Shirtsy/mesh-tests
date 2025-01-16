@@ -42,7 +42,7 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_taxgw")]
-speed = 100000.0
+speed = 1e+07
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 anchors_preset = 15
@@ -62,7 +62,7 @@ skeleton = NodePath("../../..")
 script = ExtResource("2_ic8tw")
 radius = 6e+06
 marker = NodePath("../../../Player")
-lod_distances = Array[float]([100.0, 50.0, 25.0, 5.0, 2.0, 0.5])
+lod_distances = Array[float]([1e+09, 1e+06])
 multi_noise = SubResource("Resource_p45x0")
 metadata/_custom_type_script = ExtResource("2_ic8tw")
 
