@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bueu76vvaoudt"]
+[gd_scene load_steps=12 format=3 uid="uid://bueu76vvaoudt"]
 
 [ext_resource type="PackedScene" uid="uid://cwj02077nkreh" path="res://scenes/player/player.tscn" id="1_taxgw"]
 [ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="2_ic8tw"]
 [ext_resource type="Script" uid="uid://c7155kaqouvos" path="res://scripts/multinoise.gd" id="3_85w3x"]
 [ext_resource type="Script" uid="uid://dq610yatv5rmn" path="res://scenes/mesh_test_1/wire_copy.gd" id="4_p45x0"]
 [ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://scripts/wire.gdshader" id="4_uuqyi"]
+[ext_resource type="Script" uid="uid://qbgexryir5oj" path="res://scenes/world_1/transform_copier.gd" id="6_6i63x"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_taxgw"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -41,17 +42,38 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_taxgw")]
-speed = 100.0
+speed = 100000.0
 
-[node name="QuadPlanet" type="MeshInstance3D" parent="." node_paths=PackedStringArray("marker")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.06563)
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+size = Vector2i(1152, 648)
+
+[node name="QuadPlanet" type="MeshInstance3D" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("marker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6.5e+06)
+layers = 3
+skeleton = NodePath("../../..")
 script = ExtResource("2_ic8tw")
-marker = NodePath("../Player")
+radius = 6e+06
+marker = NodePath("../../../Player")
 lod_distances = Array[float]([100.0, 50.0, 25.0, 5.0, 2.0, 0.5])
 multi_noise = SubResource("Resource_p45x0")
 metadata/_custom_type_script = ExtResource("2_ic8tw")
 
-[node name="Wire" type="MeshInstance3D" parent="QuadPlanet"]
+[node name="Wire" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/QuadPlanet"]
 transform = Transform3D(1.001, 0, 0, 0, 1.001, 0, 0, 0, 1.001, 0, 0, 0)
+layers = 3
 material_override = SubResource("ShaderMaterial_6i63x")
 script = ExtResource("4_p45x0")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("target")]
+near = 4000.0
+far = 4e+07
+script = ExtResource("6_6i63x")
+target = NodePath("../../../Player")

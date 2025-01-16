@@ -92,6 +92,11 @@ down={
 ]
 }
 
+[layer_names]
+
+3d_render/layer_1="Near"
+3d_render/layer_2="Far"
+
 [physics]
 
 common/physics_jitter_fix=0.0
