@@ -15,14 +15,22 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("escape"):
 		get_tree().quit()
+	if event.is_action_pressed("scroll_up"):
+		speed += 10_0000
+	elif event.is_action_pressed("scroll_down"):
+		speed -= 10_0000
+		
 	if event is InputEventMouseMotion:
 		mouse_delta = event.screen_relative
 
 
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	rotation = rotation + (Vector3(-mouse_delta.y, -mouse_delta.x, 0) * rotation_speed * delta)
 	rotation.x = clamp(rotation.x, deg_to_rad(-90.0), deg_to_rad(90.0))
 	mouse_delta = Vector2.ZERO
+
+
+func _physics_process(delta: float) -> void:
 	var x_in: float = Input.get_axis("left", "right")
 	var y_in: float = Input.get_axis("down", "up")
 	var z_in: float = Input.get_axis("forward", "back")

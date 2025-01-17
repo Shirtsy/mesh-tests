@@ -28,7 +28,7 @@ func _ready() -> void:
 	mesh = generate_mesh(radius, marker.position - position, lod_distances, multi_noise, noise_mult)
 	#print("Mesh Vert Count: ", mesh.surface_get_array_len(Mesh.ARRAY_VERTEX))
 	
-	
+	 
 func _process(_delta: float) -> void:
 	if not thread.is_started():
 		thread.start(
@@ -108,8 +108,7 @@ static func generate_verts(
 			for vert: Vector3 in x:
 				var new_vert: Vector3 = (
 						vert.normalized()
-						* (rad + noi.get_noise_3dv(vert)
-						* noi_mult)
+						* (rad + noi.get_noise_3dv(vert) * noi_mult)
 				)
 				new_quad.append(new_vert)
 			return new_quad
