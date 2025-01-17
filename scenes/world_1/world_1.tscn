@@ -54,7 +54,9 @@ node_2 = NodePath("../SubViewportContainer/SubViewport/QuadPlanet")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer2"]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(1152, 648)
+render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer2/SubViewport"]
 environment = SubResource("Environment_85w3x")
@@ -87,7 +89,6 @@ multi_noise = SubResource("Resource_p45x0")
 metadata/_custom_type_script = ExtResource("2_ic8tw")
 
 [node name="Wire" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/QuadPlanet"]
-visible = false
 layers = 3
 material_override = SubResource("ShaderMaterial_6i63x")
 script = ExtResource("4_p45x0")

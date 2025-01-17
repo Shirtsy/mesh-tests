@@ -10,5 +10,10 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	text = "Distance: " + str(node_1.global_position.distance_to(node_2.global_position) - node_2.radius) \
+	text = (
+			"Distance: " + str(
+				node_1.global_position.distance_to(node_2.global_position) - node_2.radius
+			)
 			+ "\n" + "Speed: " + str(node_1.speed)
+			+ "\n" + "FPS: " + str(Engine.get_frames_per_second())
+	)
