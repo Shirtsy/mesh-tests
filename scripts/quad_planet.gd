@@ -2,6 +2,9 @@ class_name QuadPlanet
 extends MeshInstance3D
 
 
+signal mesh_updated
+
+
 @export var radius: float = 1.0
 @export var marker: Node3D
 @export var lod_distances: Array[float]
@@ -36,6 +39,7 @@ func _process(_delta: float) -> void:
 		)
 	elif not thread.is_alive():
 		mesh = thread.wait_to_finish()
+		mesh_updated.emit()
 	pass
 
 
