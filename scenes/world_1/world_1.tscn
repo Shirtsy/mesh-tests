@@ -89,6 +89,7 @@ multi_noise = SubResource("Resource_p45x0")
 metadata/_custom_type_script = ExtResource("2_ic8tw")
 
 [node name="Wire" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/QuadPlanet"]
+visible = false
 layers = 3
 material_override = SubResource("ShaderMaterial_6i63x")
 script = ExtResource("4_p45x0")

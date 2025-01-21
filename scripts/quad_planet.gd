@@ -40,7 +40,6 @@ func _process(_delta: float) -> void:
 	elif not thread.is_alive():
 		mesh = thread.wait_to_finish()
 		mesh_updated.emit()
-	pass
 
 
 #region Static functions
@@ -86,18 +85,20 @@ static func generate_verts(
 	var hypermap: HyperMap = HyperMap.new()
 	for dist: float in lod_dist:
 		if len(process_quads) == 0:
-			#print("Done!")
+			#print("Done!")2
 			break
 		hypermap.start(
-				func(quad: Array[Vector3]) -> Array[Array]:
-					if any_within_distance(quad, marker_pos, dist):
-						return subdivide_quad(quad, rad)
+				func(quad: Array) -> Array[Array]:
+					var typed_quad: Array[Vector3]
+					typed_quad.assign(quad)
+					if any_within_distance(typed_quad, marker_pos, dist):
+						return subdivide_quad(typed_quad, rad)
 					else:
-						return [quad]
+						return [typed_quad]
 					,
 				process_quads
 		)
-		var processed_quad_lists: Array[Array] = hypermap.wait_for_result()
+		var processed_quad_lists: Array = hypermap.wait_for_result()
 		draw_quads.append_array(flatten(processed_quad_lists.filter(
 				func(x: Array) -> bool:
 					return len(x) == 1
