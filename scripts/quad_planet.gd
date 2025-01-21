@@ -209,14 +209,4 @@ static func flatten(arr: Array) -> Array:
 		for item: Variant in a:
 			new_arr.append(item)
 	return new_arr
-
-
-## Accepts [Callable] [param function] that returns [Array] and applies it to [param arr].
-## Returns flat [Array] of all returned values.
-static func flatmap(function: Callable, arr: Array) -> Array:
-	var new_arr: Array = []
-	for a: Array in arr.map(function):
-		for item: Variant in a:
-			new_arr.append(item)
-	return new_arr
 #endregion
