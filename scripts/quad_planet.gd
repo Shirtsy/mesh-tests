@@ -72,7 +72,7 @@ static func generate_verts(
 	var process_quads: Array[Array] = []
 	var draw_quads: Array[Array] = []
 	
-	# Generate cube faces.
+	# Generate cube faces normalized to sphere.
 	for dir: Vector3 in DIRECTIONS:
 		process_quads.append(generate_cube_face(dir).map(
 				func(x: Vector3) -> Vector3:
@@ -83,27 +83,29 @@ static func generate_verts(
 	# All within LOD ranges are added to processing list, are subdivided, then
 	# get added back to processing list for next layer. This way only 'leaf'
 	# quads get drawn.
+	var hypermap: HyperMap = HyperMap.new()
 	for dist: float in lod_dist:
 		if len(process_quads) == 0:
 			#print("Done!")
 			break
-		# Sort quadarrays into near [1] and far [0].
-		var sorted_quads: Array[Array] = sort_array(
-				func(x: Array) -> bool:
-					var y: Array[Vector3]
-					y.assign(x)
-					return any_within_distance(y, marker_pos, dist),
+		hypermap.start(
+				func(quad: Array[Vector3]) -> Array[Array]:
+					if any_within_distance(quad, marker_pos, dist):
+						return subdivide_quad(quad, rad)
+					else:
+						return [quad]
+					,
 				process_quads
 		)
-		draw_quads.append_array(sorted_quads[0])
-		process_quads.assign(flatmap(
-				func(x: Array) -> Array:
-					var y: Array[Vector3]
-					y.assign(x)
-					return subdivide_quad(y, rad),
-				sorted_quads[1]
-		))
-		#print(dist, " ", len(draw_quads), " ", len(process_quads))
+		var processed_quad_lists: Array[Array] = hypermap.wait_for_result()
+		draw_quads.append_array(flatten(processed_quad_lists.filter(
+				func(x: Array) -> bool:
+					return len(x) == 1
+		)))
+		process_quads.assign(flatten(processed_quad_lists.filter(
+				func(x: Array) -> bool:
+					return len(x) == 4
+		)))
 	draw_quads.append_array(process_quads)
 	
 	# Renormalize verts to apply noise to draw_quads
@@ -200,6 +202,14 @@ static func sort_array(function: Callable, arr: Array) -> Array[Array]:
 			falsey.append(item)
 	return [falsey, truthy]
 	
+
+static func flatten(arr: Array) -> Array:
+	var new_arr: Array = []
+	for a: Array in arr:
+		for item: Variant in a:
+			new_arr.append(item)
+	return new_arr
+
 
 ## Accepts [Callable] [param function] that returns [Array] and applies it to [param arr].
 ## Returns flat [Array] of all returned values.

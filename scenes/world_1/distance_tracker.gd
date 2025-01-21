@@ -14,8 +14,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if Time.get_ticks_msec() % 5000 == 0:
-		ups = updates / 5.0
+	if Time.get_ticks_msec() % 1000 == 0:
+		ups = updates
 		updates = 0
 	text = (
 			"Distance: " + str(
