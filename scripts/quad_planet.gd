@@ -2,6 +2,9 @@ class_name QuadPlanet
 extends MeshInstance3D
 
 
+signal mesh_updated
+
+
 @export var radius: float = 1.0
 @export var marker: Node3D
 @export var lod_distances: Array[float]
@@ -36,6 +39,7 @@ func _process(_delta: float) -> void:
 		)
 	elif not thread.is_alive():
 		mesh = thread.wait_to_finish()
+		mesh_updated.emit()
 	pass
 
 
@@ -83,20 +87,21 @@ static func generate_verts(
 		if len(process_quads) == 0:
 			#print("Done!")
 			break
-		var split_quadarrays: Array[Array] = split_array(
+		# Sort quadarrays into near [1] and far [0].
+		var sorted_quads: Array[Array] = sort_array(
 				func(x: Array) -> bool:
 					var y: Array[Vector3]
 					y.assign(x)
 					return any_within_distance(y, marker_pos, dist),
 				process_quads
 		)
-		draw_quads.append_array(split_quadarrays[0])
+		draw_quads.append_array(sorted_quads[0])
 		process_quads.assign(flatmap(
 				func(x: Array) -> Array:
 					var y: Array[Vector3]
 					y.assign(x)
 					return subdivide_quad(y, rad),
-				split_quadarrays[1]
+				sorted_quads[1]
 		))
 		#print(dist, " ", len(draw_quads), " ", len(process_quads))
 	draw_quads.append_array(process_quads)
@@ -185,7 +190,7 @@ static func any_within_distance(points: Array[Vector3], pos: Vector3, dist: floa
 
 ## Processes [param arr] with [param function]. Returns [Array]. Index [code]0[/code] is false values.
 ## Index [code]1[/code] is true values.
-static func split_array(function: Callable, arr: Array) -> Array[Array]:
+static func sort_array(function: Callable, arr: Array) -> Array[Array]:
 	var falsey: Array = []
 	var truthy: Array = []
 	for item: Variant in arr:

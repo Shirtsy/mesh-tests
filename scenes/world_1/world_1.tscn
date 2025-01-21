@@ -54,7 +54,9 @@ node_2 = NodePath("../SubViewportContainer/SubViewport/QuadPlanet")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer2"]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(1152, 648)
+render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer2/SubViewport"]
 environment = SubResource("Environment_85w3x")
@@ -97,3 +99,5 @@ near = 3500.0
 far = 4e+07
 script = ExtResource("6_6i63x")
 target = NodePath("../../../SubViewport/Player")
+
+[connection signal="mesh_updated" from="SubViewportContainer2/SubViewportContainer/SubViewport/QuadPlanet" to="SubViewportContainer2/Label" method="_on_quad_planet_mesh_updated"]
