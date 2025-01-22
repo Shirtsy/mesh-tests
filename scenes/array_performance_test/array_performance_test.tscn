@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4u15wcbjo5mb"]
+
+[ext_resource type="Script" uid="uid://7g5ovnbgdbhk" path="res://scenes/array_performance_test/array_performance_test.gd" id="1_ikir1"]
+
+[node name="ArrayPerformanceTest" type="Node"]
+script = ExtResource("1_ikir1")

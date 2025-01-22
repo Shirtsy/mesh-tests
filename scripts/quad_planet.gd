@@ -111,15 +111,15 @@ static func generate_verts(
 	
 	# Renormalize verts to apply noise to draw_quads
 	draw_quads.assign(draw_quads.map(
-		func(x: Array) -> Array[Vector3]:
-			var new_quad: Array[Vector3] = []
-			for vert: Vector3 in x:
-				var new_vert: Vector3 = (
-						vert.normalized()
-						* (rad + noi.get_noise_3dv(vert) * noi_mult)
-				)
-				new_quad.append(new_vert)
-			return new_quad
+			func(x: Array) -> Array[Vector3]:
+				var new_quad: Array[Vector3] = []
+				for vert: Vector3 in x:
+					var new_vert: Vector3 = (
+							vert.normalized()
+							* (rad + noi.get_noise_3dv(vert) * noi_mult)
+					)
+					new_quad.append(new_vert)
+				return new_quad
 	))
 	
 	# Append quads as two triangles.
