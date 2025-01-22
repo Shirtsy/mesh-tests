@@ -5,6 +5,7 @@ extends MeshInstance3D
 signal mesh_updated
 
 
+@export var collider: CollisionShape3D
 @export var radius: float = 1.0
 @export var marker: Node3D
 @export var lod_distances: Array[float]
@@ -28,17 +29,25 @@ const DIRECTIONS: Array[Vector3] = [
 func _ready() -> void:
 	assert(marker, "Marker Node3D not set.")
 	assert(multi_noise, "MultiNoise not set.")
+	assert(collider, "Collider not set.")
 	mesh = generate_mesh(radius, marker.position - position, lod_distances, multi_noise, noise_mult)
 	#print("Mesh Vert Count: ", mesh.surface_get_array_len(Mesh.ARRAY_VERTEX))
 	
 	 
 func _process(_delta: float) -> void:
 	if not thread.is_started():
-		thread.start(
-				generate_mesh.bind(radius, marker.position - position, lod_distances, multi_noise, noise_mult)
-		)
+		thread.start((
+				func(rad: float, marker_pos: Vector3, lod_dist: Array[float], noi: MultiNoise, noi_mult: float) -> Dictionary:
+					var surf: Mesh = generate_mesh(rad, marker_pos, lod_dist, noi, noi_mult)
+					return {
+						surface = surf,
+						shape = surf.create_trimesh_shape()
+					}
+		).bind(radius, marker.position - position, lod_distances, multi_noise, noise_mult))
 	elif not thread.is_alive():
-		mesh = thread.wait_to_finish()
+		var thread_result: Dictionary = thread.wait_to_finish()
+		mesh = thread_result.surface
+		collider.shape = thread_result.shape
 		mesh_updated.emit()
 
 
