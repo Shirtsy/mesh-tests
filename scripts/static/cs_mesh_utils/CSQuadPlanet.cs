@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using Num = System.Numerics;
 
 public partial class CSQuadPlanet : MeshInstance3D
