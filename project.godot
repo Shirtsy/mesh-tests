@@ -24,6 +24,10 @@ gdscript/warnings/inferred_declaration=2
 
 window/vsync/vsync_mode=0
 
+[dotnet]
+
+project/assembly_name="mesh tests"
+
 [input]
 
 left={
