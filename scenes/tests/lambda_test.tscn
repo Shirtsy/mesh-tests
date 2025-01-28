@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://r10u2fsshamc"]
+
+[ext_resource type="Script" uid="uid://caqlwywpv2g54" path="res://scenes/tests/lambda_test.gd" id="1_m6eqj"]
+
+[node name="LambdaTest" type="Node"]
+script = ExtResource("1_m6eqj")

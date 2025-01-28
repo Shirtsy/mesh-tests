@@ -7,13 +7,9 @@ public readonly struct Vertex
 {
     public readonly Vector3 XYZ;
     public readonly Vector2 UV;
-    public readonly Vector3 Normal;
     public readonly uint SmoothGroup;
 
-    public Vertex(
-        Vector3 xyz,
-        Vector2 uv,
-        uint smoothGroup = uint.MaxValue)
+    public Vertex(Vector3 xyz, Vector2 uv, uint smoothGroup = uint.MaxValue)
     {
         XYZ = xyz;
         UV = uv;
@@ -31,6 +27,11 @@ public readonly struct Vertex
 
     public static Vertex operator /(Vertex a, float b) =>
         new Vertex(a.XYZ / b, a.UV / b);
+
+    public bool IsInRange(Vector3 target, float range)
+    {
+        return XYZ.DistanceSquaredTo(target) <= range;
+    }
 }
 
 public readonly struct Tri
@@ -52,7 +53,7 @@ public readonly struct Tri
         1 => _v2,
         2 => _v3,
         _ => throw new IndexOutOfRangeException(
-            "Quad vertices must be accessed with index 0-2")
+            "Tri vertices must be accessed with index 0-2")
     };
 
     public IEnumerable<Vertex> Vertices
@@ -124,5 +125,10 @@ public readonly struct Quad
             new Quad(_v3, newV[2], newV[4], newV[1]),
             new Quad(newV[2], _v4, newV[3], newV[4])
         ];
+    }
+
+    public bool AnyInRange(Vector3 target, float range)
+    {
+        return Vertices.Any(x => x.IsInRange(target, range));
     }
 }

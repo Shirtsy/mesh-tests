@@ -28,7 +28,7 @@ public static class PlanetUtils : object
         return (ProcessVertArray(verts.Draw), ProcessVertArray(verts.Collider));
     }
 
-    public static (Vertex[] Draw, Vertex[] Collider) GenerateVerts(
+    private static (Vertex[] Draw, Vertex[] Collider) GenerateVerts(
         double radius,
         Vector3 markerPos,
         double[] lodDist,
