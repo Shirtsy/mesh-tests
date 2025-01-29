@@ -127,8 +127,8 @@ public readonly struct Quad
         ];
     }
 
-    public bool AnyInRange(Vector3 target, float range)
+    public int CornersInRange(Vector3 target, float range)
     {
-        return Vertices.Any(x => x.IsInRange(target, range));
+        return Vertices.Count(x => x.IsInRange(target, range));
     }
 }

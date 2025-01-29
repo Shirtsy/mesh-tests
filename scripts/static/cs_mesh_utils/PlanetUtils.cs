@@ -2,14 +2,19 @@ using Godot;
 
 public static class PlanetUtils : object
 {   
-    public static (Mesh Draw, Mesh Collider) GenerateMesh(
+    public static (Mesh Draw, Mesh Collider) GenerateMeshes(
         double radius,
         Vector3 markerPos,
         double[] lodDist,
         Noise planetNoise,
         double noiseMult)
     {
-        Mesh ProcessVertArray(Vertex[] vertsArr)
+        (Vertex[] Draw, Vertex[] Collider) verts = GenerateVerts(
+            radius, markerPos, lodDist, planetNoise, noiseMult);
+        return (VertsToMesh(verts.Draw), VertsToMesh(verts.Collider));
+    }
+
+    private static Mesh VertsToMesh(Vertex[] vertsArr)
         {
             SurfaceTool st = new SurfaceTool();
             st.Begin(Mesh.PrimitiveType.Triangles);
@@ -23,10 +28,6 @@ public static class PlanetUtils : object
             st.GenerateNormals();
             return st.Commit();
         }
-        (Vertex[] Draw, Vertex[] Collider) verts = GenerateVerts(
-            radius, markerPos, lodDist, planetNoise, noiseMult);
-        return (ProcessVertArray(verts.Draw), ProcessVertArray(verts.Collider));
-    }
 
     private static (Vertex[] Draw, Vertex[] Collider) GenerateVerts(
         double radius,
