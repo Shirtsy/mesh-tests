@@ -10,7 +10,7 @@ var gen_time: float = 0.0
 
 
 func _ready() -> void:
-	assert(node_1 and node_2, "Not all nodes have been initialized.")
+	assert(node_1 and node_2, "Not all nodes have been Snitialized.")
 
 
 func _process(_delta: float) -> void:
@@ -25,5 +25,10 @@ func _process(_delta: float) -> void:
 
 
 func _on_quad_planet_mesh_updated() -> void:
+	gen_time = (Time.get_ticks_msec() - gen_start_time) / 1000.0
+	gen_start_time = Time.get_ticks_msec()
+
+
+func _on_cs_quad_planet_mesh_updated() -> void:
 	gen_time = (Time.get_ticks_msec() - gen_start_time) / 1000.0
 	gen_start_time = Time.get_ticks_msec()

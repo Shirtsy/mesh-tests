@@ -47,7 +47,9 @@ public partial class PlanetUtils : GodotObject
         List<Quad> colliderQuads = new List<Quad>();
         foreach (double distance in lodDist)
         {
-            if (processQuads.Count == 0) { break; }
+            // Seems to be doing something where there are actually no quads left
+            // to draw, the print statements down below show that drawQuads is len 0
+            if (processQuads.Count == 0) { GD.Print("Breaking..."); break; }
             newProcessQuads.Clear();
             colliderQuads.Clear();
             foreach (Quad quad in processQuads)
@@ -63,36 +65,38 @@ public partial class PlanetUtils : GodotObject
                 }
             }
             processQuads = newProcessQuads;
+            
         }
         drawQuads.AddRange(processQuads);
+        GD.Print($"Length: {newProcessQuads.Count}");
 
-        Vertex[] quadsToVerts(List<Quad> quads)
+        Vertex[] QuadsToVerts(List<Quad> quads)
         {
             return quads
-            .SelectMany(quad => new[] { quad.Tris.Item1, quad.Tris.Item2 })
-            .SelectMany(tri => tri.Vertices)
-            .Select(v =>
-                new Vertex(v.XYZ.Normalized() * (float)radius, v.UV)
-            )
-            .ToArray();
+                .SelectMany(quad => new Tri[] { quad.Tris.Item1, quad.Tris.Item2 })
+                .SelectMany(tri => tri.Vertices)
+                .Select(v =>
+                    new Vertex(v.XYZ.Normalized() * (float)radius, v.UV)
+                )
+                .ToArray();
         }
-        return (quadsToVerts(drawQuads),
-            quadsToVerts(colliderQuads));
+        return (QuadsToVerts(drawQuads),
+            QuadsToVerts(colliderQuads));
     }
 
     public static List<Quad> CreateUnitCube()
     {
         var quads = new List<Quad>();
 
-        // Define the 8 vertices of a unit cube
-        Vertex v000 = new Vertex(new Vector3(0, 0, 0), new Vector2(0, 0));
-        Vertex v100 = new Vertex(new Vector3(1, 0, 0), new Vector2(1, 0));
-        Vertex v110 = new Vertex(new Vector3(1, 1, 0), new Vector2(1, 1));
-        Vertex v010 = new Vertex(new Vector3(0, 1, 0), new Vector2(0, 1));
-        Vertex v001 = new Vertex(new Vector3(0, 0, 1), new Vector2(0, 0));
-        Vertex v101 = new Vertex(new Vector3(1, 0, 1), new Vector2(1, 0));
+        // Define the 8 vertices of a unit cube centered at (0,0,0)
+        Vertex v000 = new Vertex(new Vector3(-1, -1, -1), new Vector2(0, 0));
+        Vertex v100 = new Vertex(new Vector3(1, -1, -1), new Vector2(1, 0));
+        Vertex v110 = new Vertex(new Vector3(1, 1, -1), new Vector2(1, 1));
+        Vertex v010 = new Vertex(new Vector3(-1, 1, -1), new Vector2(0, 1));
+        Vertex v001 = new Vertex(new Vector3(-1, -1, 1), new Vector2(0, 0));
+        Vertex v101 = new Vertex(new Vector3(1, -1, 1), new Vector2(1, 0));
         Vertex v111 = new Vertex(new Vector3(1, 1, 1), new Vector2(1, 1));
-        Vertex v011 = new Vertex(new Vector3(0, 1, 1), new Vector2(0, 1));
+        Vertex v011 = new Vertex(new Vector3(-1, 1, 1), new Vector2(0, 1));
 
         // Create 6 quads for each face of the cube (in clockwise winding order)
         quads.Add(new Quad(v000, v100, v110, v010)); // Front face

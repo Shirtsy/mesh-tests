@@ -53,7 +53,7 @@ layout_mode = 2
 text = "DISTANCE"
 script = ExtResource("7_bn7ui")
 node_1 = NodePath("../SubViewport/Player")
-node_2 = NodePath("../SubViewportContainer/SubViewport/QuadPlanet")
+node_2 = NodePath("../SubViewportContainer/SubViewport/CSQuadPlanet")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer2"]
 transparent_bg = true
@@ -82,10 +82,12 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="CSQuadPlanet" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport" node_paths=PackedStringArray("collider", "marker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -650000)
 script = ExtResource("3_nr080")
 collider = NodePath("StaticBody3D/CollisionShape3D")
+radius = 600000.0
 marker = NodePath("../../../SubViewport/Player")
-lod_distances = PackedFloat64Array(0, 0, 0)
+lod_distances = PackedFloat64Array(6e+07, 6e+07, 6e+07, 600000)
 multi_noise = SubResource("FastNoiseLite_qc71u")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet"]
@@ -121,4 +123,5 @@ far = 4e+07
 script = ExtResource("6_6i63x")
 target = NodePath("../../../SubViewport/Player")
 
+[connection signal="mesh_updated" from="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet" to="SubViewportContainer2/Label" method="_on_cs_quad_planet_mesh_updated"]
 [connection signal="mesh_updated" from="SubViewportContainer2/SubViewportContainer/SubViewport/QuadPlanet" to="SubViewportContainer2/Label" method="_on_quad_planet_mesh_updated"]

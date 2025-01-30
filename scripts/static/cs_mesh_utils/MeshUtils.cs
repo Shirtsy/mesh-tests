@@ -30,7 +30,7 @@ public readonly struct Vertex
 
     public bool IsInRange(Vector3 target, float range)
     {
-        return XYZ.DistanceSquaredTo(target) <= range;
+        return XYZ.DistanceSquaredTo(target) <= Math.Pow(range, 2);
     }
 }
 
