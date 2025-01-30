@@ -3,7 +3,7 @@ using Godot;
 using GCollection = Godot.Collections;
 using System.Linq;
 
-public static class PlanetUtils : object
+public partial class PlanetUtils : GodotObject
 {   
     public static GCollection.Dictionary<string, Mesh> GeneratePlanetMeshes(
         double radius,
