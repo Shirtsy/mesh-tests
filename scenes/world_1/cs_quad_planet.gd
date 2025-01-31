@@ -34,7 +34,7 @@ func _process(_delta: float) -> void:
 	if not thread.is_started():
 		thread.start((
 			PlanetUtils.generate_planet_meshes
-		).bind(radius, marker.position - position, lod_distances, multi_noise))
+		).bind(radius, marker.global_position - global_position, lod_distances, multi_noise))
 	elif not thread.is_alive():
 		var thread_result: Dictionary[String, Variant] = thread.wait_to_finish()
 		# print(len(thread_result.draw.get_faces()))
