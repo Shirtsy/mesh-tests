@@ -24,6 +24,12 @@ glow_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_qc71u"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6i63x"]
+render_priority = 0
+shader = ExtResource("4_uuqyi")
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 3.0
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bn7ui"]
 frequency = 0.5
 
@@ -35,12 +41,6 @@ script = ExtResource("3_85w3x")
 noise_sources = Array[Noise]([SubResource("FastNoiseLite_bn7ui"), SubResource("FastNoiseLite_nr080")])
 noise_magnitudes = Array[float]([5.0, 1000.0])
 metadata/_custom_type_script = ExtResource("3_85w3x")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6i63x"]
-render_priority = 0
-shader = ExtResource("4_uuqyi")
-shader_parameter/albedo = Color(0, 0, 0, 1)
-shader_parameter/outline_width = 3.0
 
 [node name="World1" type="Node3D"]
 
@@ -87,12 +87,18 @@ script = ExtResource("3_nr080")
 collider = NodePath("StaticBody3D/CollisionShape3D")
 radius = 600000.0
 marker = NodePath("../../../SubViewport/Player")
-lod_distances = PackedFloat64Array(6e+07, 6e+07, 6e+07, 600000)
+lod_distances = PackedFloat64Array(6e+07, 6e+07, 6e+07, 1e+06, 750000, 500000, 250000, 100000, 75000, 50000, 25000, 10000, 2500, 1000, 750, 500, 250)
 multi_noise = SubResource("FastNoiseLite_qc71u")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet/StaticBody3D"]
+
+[node name="Wire2" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet"]
+layers = 3
+material_override = SubResource("ShaderMaterial_6i63x")
+skeleton = NodePath("../../QuadPlanet")
+script = ExtResource("4_p45x0")
 
 [node name="QuadPlanet" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport" node_paths=PackedStringArray("collider", "marker")]
 process_mode = 4

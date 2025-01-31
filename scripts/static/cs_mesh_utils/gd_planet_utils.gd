@@ -9,7 +9,7 @@ func generate_planet_meshes(
 		marker_pos: Vector3,
 		lod_dist: PackedFloat64Array,
 		planet_noise: Noise
-) -> Dictionary[String, Mesh]:
+) -> Dictionary[String, Variant]:
 	return cs_script.GeneratePlanetMeshes(
 			radius,
 			marker_pos,

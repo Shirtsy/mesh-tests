@@ -5,7 +5,7 @@ using System.Linq;
 
 public partial class PlanetUtils : GodotObject
 {   
-    public static GCollection.Dictionary<string, Mesh> GeneratePlanetMeshes(
+    public static GCollection.Dictionary<string, Variant> GeneratePlanetMeshes(
         double radius,
         Vector3 markerPos,
         double[] lodDist,
@@ -13,10 +13,10 @@ public partial class PlanetUtils : GodotObject
     {
         (Vertex[] Draw, Vertex[] Collider) verts = GeneratePlanetVerts(
             radius, markerPos, lodDist, planetNoise);
-        return new GCollection.Dictionary<string, Mesh>()
+        return new GCollection.Dictionary<string, Variant>()
         {
             {"draw", VertsToMesh(verts.Draw)},
-            {"collider", VertsToMesh(verts.Collider)}
+            {"collider", VertsToMesh(verts.Collider).CreateTrimeshShape()}
         };  
     }
 
@@ -47,42 +47,39 @@ public partial class PlanetUtils : GodotObject
         List<Quad> colliderQuads = new List<Quad>();
         foreach (double distance in lodDist)
         {
-            // Seems to be doing something where there are actually no quads left
-            // to draw, the print statements down below show that drawQuads is len 0
-            if (processQuads.Count == 0) { GD.Print("Breaking..."); break; }
+            if (processQuads.Count == 0) { break; }
             newProcessQuads.Clear();
             colliderQuads.Clear();
             foreach (Quad quad in processQuads)
             {
                 if (quad.CornersInRange(markerPos, (float)distance) > 0)
                 {
-                    newProcessQuads.AddRange(quad.Subdivide());
+                    newProcessQuads.AddRange(quad.Subdivide()
+                        .Select(x => x.Normalized() * (float)radius));
                 }
                 else
                 {
-                    drawQuads.Add(quad);
-                    colliderQuads.Add(quad);
+                    drawQuads.Add(quad.Normalized() * (float)radius);
+                    colliderQuads.Add(quad.Normalized() * (float)radius);
                 }
             }
-            processQuads = newProcessQuads;
+            processQuads = new List<Quad>(newProcessQuads);
             
         }
         drawQuads.AddRange(processQuads);
-        GD.Print($"Length: {newProcessQuads.Count}");
+        // GD.Print($"Length: {newProcessQuads.Count}");
 
         Vertex[] QuadsToVerts(List<Quad> quads)
         {
             return quads
                 .SelectMany(quad => new Tri[] { quad.Tris.Item1, quad.Tris.Item2 })
                 .SelectMany(tri => tri.Vertices)
-                .Select(v =>
-                    new Vertex(v.XYZ.Normalized() * (float)radius, v.UV)
-                )
                 .ToArray();
         }
         return (QuadsToVerts(drawQuads),
             QuadsToVerts(colliderQuads));
     }
+
 
     public static List<Quad> CreateUnitCube()
     {

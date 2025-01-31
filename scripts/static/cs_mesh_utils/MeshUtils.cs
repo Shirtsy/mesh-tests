@@ -17,20 +17,25 @@ public readonly struct Vertex
     }
 
     public static Vertex operator +(Vertex a, Vertex b) =>
-        new Vertex(a.XYZ + b.XYZ, a.UV + b.UV);
+        new Vertex(a.XYZ + b.XYZ, a.UV + b.UV, a.SmoothGroup);
 
     public static Vertex operator -(Vertex a, Vertex b) =>
-            new Vertex(a.XYZ + b.XYZ, a.UV + b.UV);
+            new Vertex(a.XYZ + b.XYZ, a.UV + b.UV, a.SmoothGroup);
 
     public static Vertex operator *(Vertex a, float b) =>
-        new Vertex(a.XYZ * b, a.UV * b);
+        new Vertex(a.XYZ * b, a.UV * b, a.SmoothGroup);
 
     public static Vertex operator /(Vertex a, float b) =>
-        new Vertex(a.XYZ / b, a.UV / b);
+        new Vertex(a.XYZ / b, a.UV / b, a.SmoothGroup);
 
     public bool IsInRange(Vector3 target, float range)
     {
         return XYZ.DistanceSquaredTo(target) <= Math.Pow(range, 2);
+    }
+
+    public Vertex Normalized()
+    {
+        return new Vertex(XYZ.Normalized(), UV, SmoothGroup);
     }
 }
 
@@ -127,8 +132,24 @@ public readonly struct Quad
         ];
     }
 
+    public Quad Normalized()
+    {
+        return new Quad(
+            _v1.Normalized(),
+            _v2.Normalized(),
+            _v3.Normalized(),
+            _v4.Normalized());
+    }
+
     public int CornersInRange(Vector3 target, float range)
     {
         return Vertices.Count(x => x.IsInRange(target, range));
     }
+
+    public static Quad operator *(Quad a, float b) =>
+        new Quad(
+            a._v1 *  b,
+            a._v2 *  b,
+            a._v3 *  b,
+            a._v4 *  b);
 }
