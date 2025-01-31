@@ -1,0 +1,35 @@
+[gd_resource type="VisualShader" load_steps=4 format=3 uid="uid://dyfeeg8jtv7ab"]
+
+[ext_resource type="Texture2D" uid="uid://cssi5tayl5ie6" path="res://icon.svg" id="1_3133y"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_ah08j"]
+output_port_for_preview = 0
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_0au51"]
+texture = ExtResource("1_3133y")
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+
+
+
+void fragment() {
+// Input:2
+	vec2 n_out2p0 = UV;
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0, 0.0);
+
+
+}
+"
+graph_offset = Vector2(-448.182, 44.7971)
+nodes/fragment/2/node = SubResource("VisualShaderNodeInput_ah08j")
+nodes/fragment/2/position = Vector2(-240, 220)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_0au51")
+nodes/fragment/3/position = Vector2(-80, 540)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0)

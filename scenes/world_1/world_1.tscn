@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://bueu76vvaoudt"]
+[gd_scene load_steps=19 format=3 uid="uid://bueu76vvaoudt"]
 
 [ext_resource type="PackedScene" uid="uid://cwj02077nkreh" path="res://scenes/player/player.tscn" id="1_taxgw"]
 [ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="2_ic8tw"]
 [ext_resource type="Script" uid="uid://c7155kaqouvos" path="res://scripts/multinoise.gd" id="3_85w3x"]
 [ext_resource type="Script" uid="uid://dodywi2xc67ar" path="res://scenes/world_1/cs_quad_planet.gd" id="3_nr080"]
+[ext_resource type="Shader" uid="uid://dyfeeg8jtv7ab" path="res://scenes/world_1/test_shader.tres" id="3_qc71u"]
 [ext_resource type="Script" uid="uid://dq610yatv5rmn" path="res://scenes/mesh_test_1/wire_copy.gd" id="4_p45x0"]
 [ext_resource type="Shader" uid="uid://crroawhqg5dkn" path="res://scripts/wire.gdshader" id="4_uuqyi"]
 [ext_resource type="Script" uid="uid://qbgexryir5oj" path="res://scenes/world_1/transform_copier.gd" id="6_6i63x"]
@@ -21,6 +22,10 @@ background_mode = 2
 sky = SubResource("Sky_ic8tw")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b24aa"]
+render_priority = 0
+shader = ExtResource("3_qc71u")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_qc71u"]
 
@@ -83,6 +88,7 @@ render_target_update_mode = 4
 
 [node name="CSQuadPlanet" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport" node_paths=PackedStringArray("collider", "marker")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, -650000)
+material_override = SubResource("ShaderMaterial_b24aa")
 script = ExtResource("3_nr080")
 collider = NodePath("StaticBody3D/CollisionShape3D")
 radius = 600000.0
@@ -95,10 +101,14 @@ multi_noise = SubResource("FastNoiseLite_qc71u")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet/StaticBody3D"]
 
 [node name="Wire2" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet"]
+visible = false
 layers = 3
 material_override = SubResource("ShaderMaterial_6i63x")
 skeleton = NodePath("../../QuadPlanet")
 script = ExtResource("4_p45x0")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet"]
+update_scale = false
 
 [node name="QuadPlanet" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport" node_paths=PackedStringArray("collider", "marker")]
 process_mode = 4

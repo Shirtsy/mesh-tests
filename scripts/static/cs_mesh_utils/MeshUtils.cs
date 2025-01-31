@@ -37,6 +37,11 @@ public readonly struct Vertex
     {
         return new Vertex(XYZ.Normalized(), UV, SmoothGroup);
     }
+
+    public Vertex Scale(float scale)
+    {
+        return new Vertex(XYZ * scale, UV, SmoothGroup);
+    }
 }
 
 public readonly struct Tri
@@ -139,6 +144,15 @@ public readonly struct Quad
             _v2.Normalized(),
             _v3.Normalized(),
             _v4.Normalized());
+    }
+
+    public Quad Scale(float scale)
+    {
+        return new Quad(
+            _v1.Scale(scale),
+            _v2.Scale(scale),
+            _v3.Scale(scale),
+            _v4.Scale(scale));
     }
 
     public int CornersInRange(Vector3 target, float range)

@@ -55,11 +55,11 @@ public partial class PlanetUtils : GodotObject
                 if (quad.CornersInRange(markerPos, (float)distance) > 0)
                 {
                     newProcessQuads.AddRange(quad.Subdivide()
-                        .Select(x => x.Normalized() * (float)radius));
+                        .Select(x => x.Normalized().Scale((float)radius)));
                 }
                 else
                 {
-                    drawQuads.Add(quad.Normalized() * (float)radius);
+                    drawQuads.Add(quad.Normalized().Scale((float)radius));
                     // colliderQuads.Add(quad.Normalized() * (float)radius);
                 }
             }
