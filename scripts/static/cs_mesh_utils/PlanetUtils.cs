@@ -60,13 +60,13 @@ public partial class PlanetUtils : GodotObject
                 else
                 {
                     drawQuads.Add(quad.Normalized() * (float)radius);
-                    colliderQuads.Add(quad.Normalized() * (float)radius);
+                    // colliderQuads.Add(quad.Normalized() * (float)radius);
                 }
             }
             processQuads = new List<Quad>(newProcessQuads);
-            
         }
         drawQuads.AddRange(processQuads);
+        colliderQuads = processQuads;
         // GD.Print($"Length: {newProcessQuads.Count}");
 
         Vertex[] QuadsToVerts(List<Quad> quads)
