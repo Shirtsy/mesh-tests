@@ -69,7 +69,7 @@ public partial class PlanetUtils : GodotObject
         colliderQuads = processQuads;
         // GD.Print($"Length: {newProcessQuads.Count}");
 
-        Vertex[] QuadsToVerts(List<Quad> quads)
+        Vertex[] QuadsToVerts(IEnumerable<Quad> quads)
         {
             return quads
                 .SelectMany(quad => new Tri[] { quad.Tris.Item1, quad.Tris.Item2 })
@@ -79,7 +79,6 @@ public partial class PlanetUtils : GodotObject
         return (QuadsToVerts(drawQuads),
             QuadsToVerts(colliderQuads));
     }
-
 
     public static List<Quad> CreateUnitCube()
     {
