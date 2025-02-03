@@ -42,7 +42,7 @@ func _process(delta: float) -> void:
 		collider.shape = thread_result.collider
 		mesh_updated.emit()
 	
-	rotation.y += 0.1 * delta
+	#rotation.y += 0.1 * delta
 
 func localize(vec: Vector3) -> Vector3:
 	return (vec - global_position) \

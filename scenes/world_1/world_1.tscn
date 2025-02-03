@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bueu76vvaoudt"]
+[gd_scene load_steps=20 format=3 uid="uid://bueu76vvaoudt"]
 
 [ext_resource type="PackedScene" uid="uid://cwj02077nkreh" path="res://scenes/player/player.tscn" id="1_taxgw"]
 [ext_resource type="Script" uid="uid://c1lpsets2p1bs" path="res://scripts/quad_planet.gd" id="2_ic8tw"]
@@ -22,6 +22,8 @@ background_mode = 2
 sky = SubResource("Sky_ic8tw")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="TorusMesh" id="TorusMesh_qc71u"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b24aa"]
 render_priority = 0
@@ -50,8 +52,8 @@ metadata/_custom_type_script = ExtResource("3_85w3x")
 [node name="World1" type="Node3D"]
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1152.0
+offset_bottom = 648.0
 
 [node name="Label" type="Label" parent="SubViewportContainer2" node_paths=PackedStringArray("node_1", "node_2")]
 layout_mode = 2
@@ -74,8 +76,14 @@ transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -
 shadow_enabled = true
 
 [node name="Player" parent="SubViewportContainer2/SubViewport" instance=ExtResource("1_taxgw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1e+07)
 safe_margin = 1.0
 speed = 1e+07
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer2/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1e+07)
+mesh = SubResource("TorusMesh_qc71u")
+skeleton = NodePath("../../..")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="SubViewportContainer2"]
 z_index = -1
@@ -101,7 +109,6 @@ multi_noise = SubResource("FastNoiseLite_qc71u")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet/StaticBody3D"]
 
 [node name="Wire2" type="MeshInstance3D" parent="SubViewportContainer2/SubViewportContainer/SubViewport/CSQuadPlanet"]
-visible = false
 layers = 3
 material_override = SubResource("ShaderMaterial_6i63x")
 skeleton = NodePath("../../QuadPlanet")

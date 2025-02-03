@@ -13,23 +13,24 @@ texture = ExtResource("1_3133y")
 code = "shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
 
+uniform sampler2D tex_frg_3;
 
 
 
 void fragment() {
-// Input:2
-	vec2 n_out2p0 = UV;
+// Texture2D:3
+	vec4 n_out3p0 = texture(tex_frg_3, UV);
 
 
 // Output:0
-	ALBEDO = vec3(n_out2p0, 0.0);
+	ALBEDO = vec3(n_out3p0.xyz);
 
 
 }
 "
-graph_offset = Vector2(-448.182, 44.7971)
+graph_offset = Vector2(-362.464, 73.4869)
 nodes/fragment/2/node = SubResource("VisualShaderNodeInput_ah08j")
 nodes/fragment/2/position = Vector2(-240, 220)
 nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_0au51")
 nodes/fragment/3/position = Vector2(-80, 540)
-nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0)
+nodes/fragment/connections = PackedInt32Array(3, 0, 0, 0)
