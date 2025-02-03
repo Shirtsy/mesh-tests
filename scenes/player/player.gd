@@ -19,7 +19,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		speed = min(speed * 1.2, 10_000_000)
 	elif event.is_action_pressed("scroll_down"):
 		speed = max(speed / 1.2, 1)
-		
+
 	if event is InputEventMouseMotion:
 		mouse_delta = event.screen_relative
 
@@ -30,7 +30,7 @@ func _process(_delta: float) -> void:
 	mouse_delta = Vector2.ZERO
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var x_in: float = Input.get_axis("left", "right")
 	var y_in: float = Input.get_axis("down", "up")
 	var z_in: float = Input.get_axis("forward", "back")
