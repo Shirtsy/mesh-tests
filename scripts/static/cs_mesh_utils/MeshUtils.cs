@@ -127,14 +127,23 @@ public readonly struct Quad
             (_v2 + _v3) / 2,
             (_v3 + _v4) / 2,
             (_v4 + _v1) / 2,
-            (_v1 + _v2 + _v3 + _v4) / 4
-        ];
+            (_v1 + _v2 + _v3 + _v4) / 4];
         return [
             new Quad(_v1, newV[0], newV[4], newV[3]),
             new Quad(newV[0], _v2, newV[1], newV[4]),
             new Quad(_v3, newV[2], newV[4], newV[1]),
             new Quad(newV[2], _v4, newV[3], newV[4])
         ];
+    }
+
+    public Quad[] SplitAndTransform(
+        Vector3 localMarkerPos,
+        Func<Vertex, Vertex> transformation)
+    {
+        Vertex[] updatedVerts = Vertices
+            .Select(x => transformation(x))
+            .ToArray();
+        return [];
     }
 
     public Quad Normalized()

@@ -72,7 +72,7 @@ public partial class PlanetUtils : GodotObject
         Vertex[] QuadsToVerts(IEnumerable<Quad> quads)
         {
             return quads
-                .SelectMany(quad => new Tri[] { quad.Tris.Item1, quad.Tris.Item2 })
+                .SelectMany(quad => new Tri[2] { quad.Tris.Item1, quad.Tris.Item2 })
                 .SelectMany(tri => tri.Vertices)
                 .ToArray();
         }
